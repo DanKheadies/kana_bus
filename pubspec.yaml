@@ -1,0 +1,58 @@
+name: kana_bus
+description: "Get on the Bus and lets learn some Kana."
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cloud_firestore: ^6.8.0
+  cloud_functions: ^6.3.6
+  cupertino_icons: ^1.0.8
+  email_validator: ^3.0.0
+  equatable: ^2.1.0
+  firebase_auth: ^6.5.7
+  firebase_core: ^4.13.0
+  firebase_storage: ^13.4.6
+  flutter_bloc: ^9.1.1
+  flutter_launcher_icons: ^0.14.4
+  flutter_pw_validator: ^1.6.0
+  flutter_slidable: ^4.0.3
+  go_router: ^17.5.0
+  hydrated_bloc: ^11.0.0
+  logger: ^2.7.0
+  kana_kit: ^2.1.1
+  path_provider: ^2.1.6
+  scribble: ^0.10.0+1
+  translator: ^1.0.4+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icons/icon_adaptive.png"
+  min_sdk_android: 24
+  remove_alpha_ios: true
+  adaptive_icon_background: "#f2f2f2"
+  adpative_icon_foreground: "assets/images/icons/icon_adaptive.png"
+  web:
+    generate: true
+    image_path: "assets/images/icons/icon_adaptive.png"
+    theme_color: "#7cacf8"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/icons/
+    - assets/images/splash/
