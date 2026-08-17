@@ -38,19 +38,16 @@ class BusRidesDrawer extends StatelessWidget {
                 'New',
                 style: TextStyle(
                   fontSize: 18,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
-              leading: Icon(
-                Icons.add,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              leading: Icon(Icons.add, color: Theme.of(context).primaryColor),
               onTap: () {
                 if (clearBus != null) clearBus!();
                 context.goNamed('home');
                 Navigator.of(context).pop();
               },
-              hoverColor: Theme.of(context).colorScheme.primary.withAlpha(30),
+              hoverColor: Theme.of(context).primaryColor.withAlpha(30),
             ),
             const SizedBox(height: 15),
             ExpansionTile(title: Text('Last Acessed')),

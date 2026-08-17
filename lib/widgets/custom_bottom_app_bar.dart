@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kana_bus/barrel.dart';
 
@@ -23,10 +24,9 @@ class CustomBottomAppBar extends StatelessWidget {
               size: 30,
             ),
             onPressed: () {
-              // ScaffoldMessenger.of(context)
-              //   ..clearSnackBars()
-              //   ..showSnackBar(SnackBar(content: Text('Not working yet.')));
               Scaffold.of(context).openDrawer();
+              // SystemChannels.textInput.invokeMethod('TextInput.hide');
+              FocusManager.instance.primaryFocus?.unfocus();
             },
           ),
           const SizedBox(),

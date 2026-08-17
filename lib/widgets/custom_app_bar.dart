@@ -44,6 +44,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openEndDrawer();
+            FocusManager.instance.primaryFocus?.unfocus();
           },
         ),
       ],

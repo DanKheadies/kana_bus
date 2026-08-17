@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kana_bus/barrel.dart';
 import 'package:scribble/scribble.dart';
@@ -12,9 +13,11 @@ class PracticeScreen extends StatefulWidget {
 }
 
 class _PracticeScreenState extends State<PracticeScreen> {
-  bool useBlack = false;
+  bool showKana = false;
+  // bool useBlack = true;
   List<int> activatedIndexes = [];
-  Size gridDimensions = Size(5, 7);
+  List<int> currentCharacter = [];
+  Size gridDimensions = Size(9, 9); // Size(5, 7);
 
   final GlobalKey<ScaffoldState> stageKey = GlobalKey<ScaffoldState>();
 
@@ -24,6 +27,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
   void initState() {
     super.initState();
     notifier = ScribbleNotifier();
+
+    currentCharacter = MisakiGothicHiragana7x7.aAt9x9;
   }
 
   @override
@@ -38,54 +43,16 @@ class _PracticeScreenState extends State<PracticeScreen> {
       key: stageKey,
       appBar: AppBar(
         title: Text('Practice'),
-        leading: IconButton(
-          icon: Icon(Icons.menu_book),
-          onPressed: () {
-            stageKey.currentState?.openDrawer();
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.remove),
-            onPressed: () {
-              if (gridDimensions.width > 1) {
-                setState(() {
-                  gridDimensions = Size(
-                    gridDimensions.width - 1,
-                    gridDimensions.height,
-                  );
-                });
-              }
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              setState(() {
-                gridDimensions = Size(
-                  gridDimensions.width + 1,
-                  gridDimensions.height,
-                );
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(useBlack ? Icons.toggle_off : Icons.toggle_on),
-            onPressed: () {
-              setState(() {
-                useBlack = !useBlack;
-              });
-            },
-          ),
-          IconButton(
-            onPressed: () {
-              clearGrid();
-            },
-            icon: Icon(Icons.refresh),
-          ),
-        ],
+        // leading: IconButton(
+        //   icon: Icon(Icons.menu),
+        //   onPressed: () {
+        //     stageKey.currentState?.openDrawer();
+        //   },
+        // ),
+        automaticallyImplyLeading: false,
+        actions: buildAppBarActions(),
       ),
-      drawer: CustomDrawer(),
+      endDrawer: CustomDrawer(),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -95,6 +62,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
             bool isPortrait = height > width;
             double dependDimension = isPortrait ? width : height;
             double gridUnitLength = width / gridDimensions.width;
+            double infoSectionHeight =
+                height - gridUnitLength * gridDimensions.height;
 
             print('($width, $height)');
             print('dependDimension: $dependDimension');
@@ -109,6 +78,110 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
             return Stack(
               children: [
+                Positioned(
+                  top: 0,
+                  child: Container(
+                    // color: Colors.green.shade100,
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    height: infoSectionHeight,
+                    width: width,
+                    child: Row(
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                print('next character');
+                              },
+                              child: SizedBox(
+                                height: infoSectionHeight - 35,
+                                width: 50,
+                                // color: Colors.red.shade100,
+                                child: Icon(
+                                  Icons.chevron_left,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // SizedBox(height: 15),
+                            Text('a', style: TextStyle(fontSize: width / 5)),
+                            SizedBox(height: 15),
+                            showKana
+                                ? RichText(
+                                    text: TextSpan(
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyLarge,
+                                      children: [
+                                        TextSpan(
+                                          text: 'あ',
+                                          style: TextStyle(fontSize: width / 5),
+                                        ),
+                                        TextSpan(
+                                          text: '  ',
+                                          style: TextStyle(fontSize: width / 5),
+                                        ),
+                                        TextSpan(
+                                          text: 'あ',
+                                          style: TextStyle(
+                                            fontFamily: 'MisakiGothic',
+                                            fontSize: width / 5,
+                                          ),
+                                          // TODO: on tap, shimmer the grid (?)
+                                          // recognizer: TapGestureRecognizer()
+                                          //   ..onTap = () {
+                                          //     setState(() {});
+                                          //   },
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                // Text(
+                                //     'あ',
+                                //     style: TextStyle(
+                                //       fontFamily: 'MisakiGothic',
+                                //        fontSize: width / 10),
+                                //   )
+                                : HyperlinkText(
+                                    onTap: () {
+                                      setState(() {
+                                        showKana = true;
+                                      });
+                                    },
+                                    text: 'Show Kana',
+                                    style: TextStyle(fontSize: width / 20),
+                                  ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                print('next character');
+                              },
+                              child: SizedBox(
+                                height: infoSectionHeight - 35,
+                                width: 50,
+                                // color: Colors.blue.shade100,
+                                child: Icon(
+                                  Icons.chevron_right,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 Positioned(
                   bottom: 0,
                   child: GestureDetector(
@@ -128,12 +201,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       dragDetails: details,
                     ),
                     child: Container(
+                      padding: EdgeInsets.zero,
                       // height: height,
                       height: gridUnitLength * gridDimensions.height,
                       width: width,
-                      color: isPortrait
-                          ? Colors.red.shade100
-                          : Colors.blue.shade100,
+                      // color: isPortrait
+                      //     ? Colors.red.shade100
+                      //     : Colors.blue.shade100,
+                      // color:
                       child: GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: gridDimensions.width.toInt(),
@@ -155,13 +230,24 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           // if (isTouched) {
                           //   print('touched at $index');
                           // }
+                          bool isInCharacter = currentCharacter.contains(index);
 
                           return GridUnit(
+                            // borderColor: useBlack
+                            //     ? Colors.white.withAlpha(155)
+                            //     : Colors.transparent,
+                            borderColor: isTouched
+                                ? Colors.white.withAlpha(155)
+                                : null,
                             // color: Colors.black,
-                            color: useBlack ? Colors.black : getRandomColor(),
+                            // color: useBlack ? Colors.black : getRandomColor(),
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withAlpha(200),
                             height: dependDimension / gridDimensions.height,
                             id: '$index',
                             isActivated: isTouched,
+                            isInCharacter: isInCharacter,
                             width: dependDimension / gridDimensions.width,
                           );
                         },
@@ -203,6 +289,58 @@ class _PracticeScreenState extends State<PracticeScreen> {
     final row = (y / cellHeight).floor().clamp(0, numRows - 1);
 
     return row * numCols + col;
+  }
+
+  List<Widget> buildAppBarActions() {
+    return [
+      // IconButton(
+      //   icon: Icon(Icons.remove),
+      //   onPressed: () {
+      //     if (gridDimensions.width > 1) {
+      //       setState(() {
+      //         gridDimensions = Size(
+      //           gridDimensions.width - 1,
+      //           gridDimensions.height,
+      //         );
+      //       });
+      //     }
+      //   },
+      // ),
+      // IconButton(
+      //   icon: Icon(Icons.add),
+      //   onPressed: () {
+      //     setState(() {
+      //       gridDimensions = Size(
+      //         gridDimensions.width + 1,
+      //         gridDimensions.height,
+      //       );
+      //     });
+      //   },
+      // ),
+      // IconButton(
+      //   icon: Icon(useBlack ? Icons.toggle_off : Icons.toggle_on),
+      //   onPressed: () {
+      //     setState(() {
+      //       useBlack = !useBlack;
+      //     });
+      //   },
+      // ),
+      IconButton(
+        onPressed: () {
+          clearGrid();
+          setState(() {
+            showKana = false;
+          });
+        },
+        icon: Icon(Icons.refresh),
+      ),
+      IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () {
+          stageKey.currentState?.openEndDrawer();
+        },
+      ),
+    ];
   }
 
   void checkGridUnit({
@@ -252,6 +390,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
 class GridUnit extends StatefulWidget {
   final bool isActivated;
+  final bool isInCharacter;
   final bool? showText;
   final Color? borderColor;
   final Color? color;
@@ -264,6 +403,7 @@ class GridUnit extends StatefulWidget {
     required this.height,
     required this.id,
     required this.isActivated,
+    required this.isInCharacter,
     required this.width,
     this.borderColor,
     this.color = Colors.transparent,
@@ -291,13 +431,27 @@ class _GridUnitState extends State<GridUnit> {
         border: widget.borderColor != null
             ? Border.all(color: widget.borderColor!)
             : null,
-        color: widget.isActivated ? Colors.transparent : widget.color,
+        color: widget.isActivated
+            ? widget.isInCharacter
+                  ? Colors.white54
+                  : Colors.transparent
+            : widget.color,
       ),
+      margin: EdgeInsets.all(10),
       height: widget.height,
       width: widget.width,
       child: widget.showText!
           ? Center(
-              child: Text(widget.id, style: TextStyle(color: Colors.black45)),
+              child: Text(
+                widget.id,
+                style: TextStyle(
+                  color: widget.isActivated
+                      ? widget.isInCharacter
+                            ? Colors.black54
+                            : Colors.white12
+                      : Theme.of(context).colorScheme.inverseSurface,
+                ),
+              ),
             )
           : null,
     );

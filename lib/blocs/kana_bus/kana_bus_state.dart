@@ -37,12 +37,10 @@ class KanaBusState extends Equatable {
   }
 
   factory KanaBusState.fromJson(Map<String, dynamic> json) {
-    List<BusRide> ridesList = (json['busRides'] as List)
-        .map((busm) => BusRide.fromJson(busm))
-        .toList();
-
     return KanaBusState(
-      busRides: ridesList,
+      busRides: (json['busRides'] as List)
+          .map((ride) => BusRide.fromJson(ride))
+          .toList(),
       currentRide: BusRide.fromJson(json['currentRide']),
       status: KanaBusStatus.values.firstWhere(
         (status) => status.name.toString() == json['status'],

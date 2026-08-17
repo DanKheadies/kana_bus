@@ -57,3 +57,8 @@ flutter:
   assets:
     - assets/images/icons/
     - assets/images/splash/
+
+  fonts:
+    - family: MisakiGothic
+      fonts:
+        - asset: assets/fonts/misaki_gothic.ttf

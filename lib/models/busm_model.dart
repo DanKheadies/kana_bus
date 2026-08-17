@@ -65,10 +65,8 @@ class Busm extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    DateTime created = createdAt ?? DateTime.now();
-
     return {
-      'createdAt': created.toIso8601String(),
+      'createdAt': createdAt?.toIso8601String(),
       'english': english,
       'id': id,
       'input': input,

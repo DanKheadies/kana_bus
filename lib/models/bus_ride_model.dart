@@ -61,7 +61,7 @@ class BusRide extends Equatable {
       createdOn: createdOnDT,
       id: json['id'],
       kanaBusms: (json['kanaBusms'] as List)
-          .map((busm) => Busm.fromJson(json['kanaBusms']))
+          .map((busm) => Busm.fromJson(busm))
           .toList(),
       title: json['title'],
       updatedOn: updatedOnDT,

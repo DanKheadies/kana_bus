@@ -29,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     englishCont.dispose();
+    focusInput.dispose();
     inputCont.dispose();
     kanaCont.dispose();
     romajiCont.dispose();
@@ -67,15 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     // TODO: handle translating if the user saves before trans
                     // can complete
                     if (value != '') {
-                      await _translate(value);
+                      await translate(value);
                     } else {
-                      _clear();
+                      clear();
                     }
                   },
                   onEditingComplete: () {
-                    _save();
-                    _closeKeyboard();
-                    _clear();
+                    save();
+                    closeKeyboard();
+                    clear();
                   },
                   onSubmitted: (_) {},
                   onTap: () {
@@ -184,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   setState(() {
                                     inputCont.text = input;
                                   });
-                                  _translate(input);
+                                  translate(input);
                                   ScaffoldMessenger.of(context)
                                     ..clearSnackBars()
                                     ..showSnackBar(
@@ -273,14 +274,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _clear() {
+  void clear() {
     inputCont.clear();
     englishCont.clear();
     kanaCont.clear();
     romajiCont.clear();
   }
 
-  void _closeKeyboard() {
+  void closeKeyboard() {
     FocusScopeNode currentFocus = FocusScope.of(context);
 
     if (!currentFocus.hasPrimaryFocus) {
@@ -288,22 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _save() {
-    if (inputCont.text.isNotEmpty) {
-      Busm newBusm = Busm(
-        createdAt: DateTime.now(),
-        english: englishCont.text,
-        id: UuidV4().generate(),
-        input: inputCont.text,
-        kana: kanaCont.text,
-        romaji: romajiCont.text,
-      );
-
-      context.read<KanaBusBloc>().add(AddBusm(newBusm: newBusm));
-    }
-  }
-
-  Future<void> _translate(String input) async {
+  Future<void> translate(String input) async {
     if (input != '') {
       if (inputIsEnglish) {
         setState(() {
@@ -350,6 +336,21 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void save() {
+    if (inputCont.text.isNotEmpty) {
+      Busm newBusm = Busm(
+        createdAt: DateTime.now(),
+        english: englishCont.text,
+        id: UuidV4().generate(),
+        input: inputCont.text,
+        kana: kanaCont.text,
+        romaji: romajiCont.text,
+      );
+
+      context.read<KanaBusBloc>().add(AddBusm(newBusm: newBusm));
+    }
+  }
+
   Widget inputButton(BuildContext context) {
     return Tooltip(
       message: isLoading
@@ -369,12 +370,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   focusInput.requestFocus();
                 } else {
                   if (inputCont.text != '') {
-                    await _translate(inputCont.text);
-                    _save();
-                    _closeKeyboard();
-                    _clear();
+                    await translate(inputCont.text);
+                    save();
+                    closeKeyboard();
+                    clear();
                   } else {
-                    _clear();
+                    clear();
                   }
                 }
               },

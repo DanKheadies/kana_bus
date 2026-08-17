@@ -32,6 +32,7 @@ class BusmPane extends StatelessWidget {
       onEditingComplete: onEditingComplete,
       onSubmitted: onSubmitted,
       onTap: onTap,
+      onTapOutside: (_) => focusInput?.unfocus(),
       focusNode: focusInput,
       readOnly: isDisabled!,
       decoration: InputDecoration(
