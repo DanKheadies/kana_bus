@@ -1,0 +1,31 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "the-kana-bus",
+          "appId": "1:505721760943:android:f25eb4327d6000f10eb85a",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "the-kana-bus",
+          "appId": "1:505721760943:ios:e687280c625da84e0eb85a",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "the-kana-bus",
+          "configurations": {
+            "android": "1:505721760943:android:f25eb4327d6000f10eb85a",
+            "ios": "1:505721760943:ios:e687280c625da84e0eb85a",
+            "web": "1:505721760943:web:81fe545f00d958000eb85a"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-package com.example.kana_bus
+package com.dtfun.kana_bus
 
 import io.flutter.embedding.android.FlutterActivity
 
