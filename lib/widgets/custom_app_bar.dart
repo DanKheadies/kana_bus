@@ -8,7 +8,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text('Kana Bus'),
+      title: GestureDetector(
+        onDoubleTap: () => context.read<SettingsCubit>().toggleTheme(),
+        child: Text('Kana Bus'),
+      ),
       actions: [
         BlocBuilder<KanaBusBloc, KanaBusState>(
           builder: (context, state) {

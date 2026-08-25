@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-// import 'package:kana_bus/barrel.dart';
+import 'package:kana_bus/barrel.dart';
 
 class BusRidesDrawer extends StatelessWidget {
   final Function()? clearBus;
+  final Function()? toggleOrder;
 
-  const BusRidesDrawer({super.key, this.clearBus});
+  const BusRidesDrawer({super.key, this.clearBus, this.toggleOrder});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,6 @@ class BusRidesDrawer extends StatelessWidget {
             ),
             Center(child: Text('Bus Rides', style: TextStyle(fontSize: 18))),
             const SizedBox(height: 15),
-            // ExpansionTile(title: Text('+ New')),
             ListTile(
               title: Text(
                 'New',
@@ -48,6 +47,27 @@ class BusRidesDrawer extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               hoverColor: Theme.of(context).primaryColor.withAlpha(30),
+            ),
+            const SizedBox(height: 15),
+            // if (isFirstCome != null && toggleOrder != null) ...[],
+            BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, state) {
+                return ListTile(
+                  title: Text(
+                    'Bus Order (Newest at ${state.isFirstCome ? 'Bottom' : 'Top'})',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  leading: Icon(
+                    state.isFirstCome ? Icons.toggle_on : Icons.toggle_off,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  onTap: toggleOrder,
+                  hoverColor: Theme.of(context).primaryColor.withAlpha(30),
+                );
+              },
             ),
             const SizedBox(height: 15),
             ExpansionTile(title: Text('Last Acessed')),

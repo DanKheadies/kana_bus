@@ -16,48 +16,68 @@ class CustomBottomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          IconButton(
-            tooltip: 'Bus Rides',
-            icon: Icon(
-              Icons.line_style,
-              color: Theme.of(context).primaryColor,
-              size: 30,
+          SizedBox(
+            width: 50,
+            child: IconButton(
+              tooltip: 'Bus Rides',
+              icon: Icon(
+                Icons.line_style,
+                color: Theme.of(context).primaryColor,
+                size: 30,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+                // SystemChannels.textInput.invokeMethod('TextInput.hide');
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
             ),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-              // SystemChannels.textInput.invokeMethod('TextInput.hide');
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
           ),
           const SizedBox(),
           const SizedBox(),
-          IconButton(
-            tooltip: 'Save',
-            icon: Icon(
-              Icons.save,
-              color: Theme.of(context).primaryColor.withAlpha(
-                context.read<KanaBusBloc>().state.currentRide.kanaBusms.isEmpty
-                    ? 100
-                    : 255,
-              ),
-              size: 30,
-            ),
-            onPressed:
-                context.read<KanaBusBloc>().state.currentRide.kanaBusms.isEmpty
-                ? null
-                : () {
-                    // TODO: save input to a specified list
-                    // select all to start; can toggle to (de)select all
-                    // tap to unselect
-                    // save with a list name
-                    // N2H: must be logged in (?); will save locally but also in
-                    // Firebase if logged in
-                    ScaffoldMessenger.of(context)
-                      ..clearSnackBars()
-                      ..showSnackBar(
-                        SnackBar(content: Text('Not working yet.')),
+          SizedBox(
+            width: 50,
+            child: BlocBuilder<KanaBusBloc, KanaBusState>(
+              builder: (context, state) {
+                return state.status == KanaBusStatus.updating
+                    ? CircularProgressIndicator(padding: EdgeInsets.all(12))
+                    : IconButton(
+                        tooltip: 'Save',
+                        icon: Icon(
+                          Icons.save,
+                          color: Theme.of(context).primaryColor.withAlpha(
+                            context
+                                    .read<KanaBusBloc>()
+                                    .state
+                                    .currentRide
+                                    .kanaBusms
+                                    .isEmpty
+                                ? 100
+                                : 255,
+                          ),
+                          size: 30,
+                        ),
+                        onPressed:
+                            context
+                                .read<KanaBusBloc>()
+                                .state
+                                .currentRide
+                                .kanaBusms
+                                .isEmpty
+                            ? null
+                            : () {
+                                context.read<KanaBusBloc>().add(
+                                  EditBusRide(
+                                    andUpdate: true,
+                                    currentRide: context
+                                        .read<KanaBusBloc>()
+                                        .state
+                                        .currentRide,
+                                  ),
+                                );
+                              },
                       );
-                  },
+              },
+            ),
           ),
         ],
       ),

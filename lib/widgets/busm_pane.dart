@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class BusmPane extends StatelessWidget {
   final bool? isDisabled;
-  final Color textColor;
+  final Color? textColor;
   final FocusNode? focusInput;
   final Function()? onEditingComplete;
   final Function()? onTap;
@@ -14,14 +14,14 @@ class BusmPane extends StatelessWidget {
   const BusmPane({
     super.key,
     required this.label,
-    required this.onChanged,
     required this.controller,
-    required this.onEditingComplete,
-    required this.onSubmitted,
-    required this.textColor,
     this.focusInput,
-    this.isDisabled = true,
+    this.isDisabled = false,
+    this.onChanged,
+    this.onEditingComplete,
+    this.onSubmitted,
     this.onTap,
+    this.textColor,
   });
 
   @override
@@ -35,28 +35,10 @@ class BusmPane extends StatelessWidget {
       onTapOutside: (_) => focusInput?.unfocus(),
       focusNode: focusInput,
       readOnly: isDisabled!,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: Theme.of(context).colorScheme.surface),
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.surfaceContainer,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.surface,
-            width: 1,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(width: 2),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(width: 2),
-        ),
+      decoration: InputDecoration(labelText: label),
+      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+        color: textColor ?? Theme.of(context).colorScheme.surfaceBright,
       ),
-      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: textColor),
     );
   }
 }

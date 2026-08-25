@@ -16,6 +16,16 @@ class AddBusm extends KanaBusEvent {
   List<Object> get props => [newBusm];
 }
 
+class EditBusRide extends KanaBusEvent {
+  final bool? andUpdate;
+  final BusRide currentRide;
+
+  const EditBusRide({required this.currentRide, this.andUpdate = false});
+
+  @override
+  List<Object?> get props => [andUpdate, currentRide];
+}
+
 class GetBusRides extends KanaBusEvent {
   const GetBusRides();
 
@@ -31,4 +41,19 @@ class RemoveBusm extends KanaBusEvent {
 
   @override
   List<Object?> get props => [index, removeAll];
+}
+
+class TriggerLoading extends KanaBusEvent {
+  const TriggerLoading();
+  @override
+  List<Object> get props => [];
+}
+
+class UpdateBusRide extends KanaBusEvent {
+  final BusRide currentRide;
+
+  const UpdateBusRide({required this.currentRide});
+
+  @override
+  List<Object> get props => [currentRide];
 }

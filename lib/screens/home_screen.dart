@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kana_bus/barrel.dart';
 import 'package:kana_kit/kana_kit.dart';
 import 'package:translator/translator.dart';
@@ -15,8 +14,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool inputIsEnglish = false; // elseIs Kanji or Romanji
-  bool isHovering = false;
   bool isClicking = false;
+  bool isFirstCome = true;
+  bool isHovering = false;
+  bool isInputting = false;
   bool isLoading = false;
   FocusNode focusInput = FocusNode();
   GoogleTranslator translator = GoogleTranslator();
@@ -25,6 +26,13 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController inputCont = TextEditingController();
   TextEditingController kanaCont = TextEditingController();
   TextEditingController romajiCont = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    isFirstCome = context.read<SettingsCubit>().state.isFirstCome;
+  }
 
   @override
   void dispose() {
@@ -45,6 +53,12 @@ class _HomeScreenState extends State<HomeScreen> {
         clearBus: () => context.read<KanaBusBloc>().add(
           RemoveBusm(index: 0, removeAll: true),
         ),
+        toggleOrder: () {
+          context.read<SettingsCubit>().toggleOrder();
+          setState(() {
+            isFirstCome = !isFirstCome;
+          });
+        },
       ),
       endDrawer: CustomDrawer(),
       floatingActionButton: inputButton(context),
@@ -65,18 +79,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   label:
                       'Input (${inputIsEnglish ? 'English' : 'Kan/Romanji'})',
                   onChanged: (value) async {
-                    // TODO: handle translating if the user saves before trans
-                    // can complete
-                    if (value != '') {
-                      await translate(value);
-                    } else {
-                      clear();
+                    setState(() {
+                      isInputting = true;
+                    });
+                    await Future.delayed(Duration(milliseconds: 420));
+                    // print('cachedValue: $cachedValue');
+                    // print('value: $value');
+                    // print('inputCont: ${inputCont.text}');
+                    if (inputCont.text == value) {
+                      print('should translate now');
+                      if (value != '') {
+                        await translate(value);
+                      } else {
+                        clear();
+                      }
+                      setState(() {
+                        isInputting = false;
+                      });
                     }
                   },
                   onEditingComplete: () {
-                    save();
-                    closeKeyboard();
-                    clear();
+                    if (isInputting) {
+                      KanaBusHelper.sendSnack(
+                        context,
+                        'Translating.. One second.',
+                      );
+                    } else {
+                      save();
+                      closeKeyboard();
+                      clear();
+                    }
                   },
                   onSubmitted: (_) {},
                   onTap: () {
@@ -85,14 +117,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       extentOffset: inputCont.value.text.length,
                     );
                   },
-                  textColor: Theme.of(context).colorScheme.surface,
+                  // textColor: Theme.of(context).colorScheme.surface,
                   focusInput: focusInput,
-                  isDisabled: false,
                 ),
               ),
               const SizedBox(height: 8, width: double.infinity),
               BusmPane(
                 controller: englishCont,
+                isDisabled: true,
                 label: 'English Translation',
                 onChanged: (_) {},
                 onEditingComplete: () {},
@@ -102,6 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8, width: double.infinity),
               BusmPane(
                 controller: kanaCont,
+                isDisabled: true,
                 label: 'Kana Translation',
                 onChanged: (_) {},
                 onEditingComplete: () {},
@@ -111,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 8, width: double.infinity),
               BusmPane(
                 controller: romajiCont,
+                isDisabled: true,
                 label: 'Romaji Translation',
                 onChanged: (_) {},
                 onEditingComplete: () {},
@@ -118,149 +152,114 @@ class _HomeScreenState extends State<HomeScreen> {
                 textColor: Theme.of(context).colorScheme.secondary,
               ),
               const SizedBox(height: 20),
-              // TODO: refactor as widget
               BlocBuilder<KanaBusBloc, KanaBusState>(
                 builder: (context, state) {
-                  return Expanded(
-                    child: ListView.builder(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: state.currentRide.kanaBusms.length,
-                      itemBuilder: (context, index) {
-                        // TODO: copy the input; swipe left immediate
-                        // TODO: delete the busm; swipe right w/ confirmation
-                        return Slidable(
-                          key: Key(
-                            state.currentRide.kanaBusms[index].createdAt
-                                .toString(),
-                          ),
-                          startActionPane: ActionPane(
-                            motion: const ScrollMotion(),
-                            dismissible: DismissiblePane(onDismissed: () {}),
-                            children: [
-                              SlidableAction(
-                                onPressed: (context) {
-                                  String input =
-                                      state.currentRide.kanaBusms[index].input;
-                                  // setState(() {
-                                  //   kanaBusms.removeAt(index);
-                                  // });
-                                  context.read<KanaBusBloc>().add(
-                                    RemoveBusm(index: index),
-                                  );
-                                  ScaffoldMessenger.of(context)
-                                    ..clearSnackBars()
-                                    ..showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          '$input has been removed.',
-                                        ),
-                                      ),
-                                    );
-                                },
-                                backgroundColor: Color(0xFFFE4A49),
-                                foregroundColor: Colors.white,
-                                icon: Icons.delete,
-                                label: 'Delete',
-                              ),
-                              SlidableAction(
-                                // Note: should share all 4 inputs (w/ labels)
-                                onPressed: (context) => print('TODO: share'),
-                                backgroundColor: Color(0xFF21B7CA),
-                                foregroundColor: Colors.white,
-                                icon: Icons.share,
-                                label: 'Share',
-                              ),
-                            ],
-                          ),
-                          endActionPane: ActionPane(
-                            motion: ScrollMotion(),
-                            children: [
-                              SlidableAction(
-                                // An action can be bigger than the others.
-                                flex: 2,
-                                onPressed: (context) {
-                                  String input =
-                                      state.currentRide.kanaBusms[index].input;
-                                  setState(() {
-                                    inputCont.text = input;
-                                  });
-                                  translate(input);
-                                  ScaffoldMessenger.of(context)
-                                    ..clearSnackBars()
-                                    ..showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          '$input has been copied.',
-                                        ),
-                                      ),
-                                    );
-                                },
-                                backgroundColor: Color(0xFF7BC043),
-                                foregroundColor: Colors.white,
-                                icon: Icons.copy,
-                                label: 'Copy',
-                              ),
-                              // SlidableAction(
-                              //   onPressed: (context) => print('TODO: save'),
-                              //   backgroundColor: Color(0xFF0392CF),
-                              //   foregroundColor: Colors.white,
-                              //   icon: Icons.save,
-                              //   label: 'Save',
-                              // ),
-                            ],
-                          ),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    state.currentRide.kanaBusms[index].input,
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.surfaceBright,
-                                    ),
-                                  ),
-                                  Text(
-                                    state.currentRide.kanaBusms[index].english,
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.tertiary,
-                                    ),
-                                  ),
-                                  Text(
-                                    state.currentRide.kanaBusms[index].kana,
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                    ),
-                                  ),
-                                  Text(
-                                    state.currentRide.kanaBusms[index].romaji,
-                                    style: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.secondary,
-                                    ),
-                                  ),
-                                  index !=
-                                          state.currentRide.kanaBusms.length - 1
-                                      ? Divider(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.surface,
-                                        )
-                                      : const SizedBox(),
-                                ],
+                  String rideTitle = state.currentRide.title ?? 'This Ride';
+                  return MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            print('current: ${state.currentRide.title}');
+                            return EditBusRideModal(
+                              currentRide: state.currentRide,
+                            );
+                          },
+                        );
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 30,
+                        // color: Colors.red.shade100,
+                        child: Row(
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: Divider(
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
+                            const SizedBox(width: 15),
+                            Text(
+                              rideTitle,
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Icon(
+                              // Icons.rebase_edit,
+                              Icons.edit_note,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              BlocBuilder<KanaBusBloc, KanaBusState>(
+                builder: (context, state) {
+                  List<Busm> busmList = state.currentRide.kanaBusms.toList();
+                  if (isFirstCome) {
+                    busmList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+                  } else {
+                    busmList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  }
+
+                  return Expanded(
+                    child: ListView.separated(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      // padding: const EdgeInsets.only(top: 20),
+                      separatorBuilder: (context, index) =>
+                          index != busmList.length - 1
+                          ? Divider(
+                              color: Theme.of(context).colorScheme.surface,
+                              // height: 50,
+                            )
+                          : const SizedBox(),
+                      itemCount: busmList.length,
+                      itemBuilder: (context, index) {
+                        Busm busm = busmList[index];
+
+                        return BusmRow(
+                          busm: busm,
+                          busmListLength: busmList.length,
+                          index: index,
+                          onDelete: (context) {
+                            String input = busm.input;
+                            context.read<KanaBusBloc>().add(
+                              RemoveBusm(index: index),
+                            );
+                            KanaBusHelper.sendSnack(
+                              context,
+                              '$input has been removed.',
+                            );
+                          },
+                          onPhoto: (context) => KanaBusHelper.sendSnack(
+                            context,
+                            'TODO: add photo',
                           ),
+                          onShare: (context) => KanaBusHelper.sendSnack(
+                            context,
+                            'TODO: share inputs',
+                          ),
+                          toInput: (context) {
+                            String input = busm.input;
+                            setState(() {
+                              inputCont.text = input;
+                            });
+                            translate(input);
+                            KanaBusHelper.sendSnack(
+                              context,
+                              '$input has been put in the input.',
+                            );
+                          },
                         );
                       },
                     ),
@@ -272,21 +271,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  void clear() {
-    inputCont.clear();
-    englishCont.clear();
-    kanaCont.clear();
-    romajiCont.clear();
-  }
-
-  void closeKeyboard() {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
-    }
   }
 
   Future<void> translate(String input) async {
@@ -333,6 +317,21 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         }
       }
+    }
+  }
+
+  void clear() {
+    inputCont.clear();
+    englishCont.clear();
+    kanaCont.clear();
+    romajiCont.clear();
+  }
+
+  void closeKeyboard() {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
     }
   }
 

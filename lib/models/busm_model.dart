@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 /// ride. A busm contains input, i.e. text and/or image, with the associated
 /// translations, i.e. English, Japanese Kana/Kanji, and Romanji.
 class Busm extends Equatable {
-  final DateTime? createdAt;
+  final DateTime createdAt;
   // final List<dynamic>? images;
   final String english;
   final String id;
@@ -15,16 +15,16 @@ class Busm extends Equatable {
   final String romaji;
 
   const Busm({
+    required this.createdAt,
     required this.english,
     required this.id,
     required this.input,
     required this.kana,
     required this.romaji,
-    this.createdAt,
   });
 
   @override
-  List<Object?> get props => [createdAt, english, id, input, kana, romaji];
+  List<Object> get props => [createdAt, english, id, input, kana, romaji];
 
   Busm copyWith({
     DateTime? createdAt,
@@ -50,9 +50,10 @@ class Busm extends Equatable {
   }
 
   factory Busm.fromJson(Map<String, dynamic> json) {
-    DateTime? created = json['created'] != null
-        ? DateTime.parse(json['createdAt'])
-        : null;
+    // DateTime? created = json['created'] != null
+    //     ? DateTime.parse(json['createdAt'])
+    //     : null;
+    DateTime created = DateTime.tryParse(json['createdAt']) ?? DateTime.now();
 
     return Busm(
       createdAt: created,
@@ -66,7 +67,7 @@ class Busm extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'createdAt': createdAt?.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
       'english': english,
       'id': id,
       'input': input,
@@ -75,7 +76,8 @@ class Busm extends Equatable {
     };
   }
 
-  static const emptyBusm = Busm(
+  static final emptyBusm = Busm(
+    createdAt: DateTime(2000),
     english: '',
     id: '',
     input: '',

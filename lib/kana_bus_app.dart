@@ -26,8 +26,7 @@ class _KanaBusAppState extends State<KanaBusApp> {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           routerConfig: appRouter,
-          // theme: state == Brightness.dark ? darkTheme() : lightTheme(),
-          theme: darkTheme(),
+          theme: state.isDarkTheme ? darkTheme() : lightTheme(),
         );
       },
     );

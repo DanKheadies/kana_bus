@@ -2,6 +2,7 @@ export 'blocs/_blocs.dart';
 export 'config/_config.dart';
 export 'cubits/_cubits.dart';
 export 'data/_data.dart';
+export 'helpers/_helpers.dart';
 export 'models/_models.dart';
 export 'repositories/_repositories.dart';
 export 'screens/_screens.dart';
