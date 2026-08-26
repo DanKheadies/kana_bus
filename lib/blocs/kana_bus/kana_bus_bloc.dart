@@ -16,9 +16,30 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
     on<AddBusm>(_onAddBusm);
     on<EditBusRide>(_onEditBusRide);
     on<GetBusRides>(_onGetBusRides);
+    on<LoadCurrentRide>(_onLoadCurrentRide);
     on<RemoveBusm>(_onRemoveBusm);
     on<TriggerLoading>(_onTriggerLoading);
     on<UpdateBusRide>(_onUpdateBusRide);
+  }
+
+  void _onLoadCurrentRide(LoadCurrentRide event, Emitter<KanaBusState> emit) {
+    BusRide currentRide = BusRide.emptyBusRide;
+    List<BusRide> rides = state.busRides.toList();
+
+    int index = rides.indexWhere((bs) => bs.id == event.id);
+    if (index >= 0) {
+      print('ride index: $index');
+      currentRide = rides[index];
+    }
+
+    emit(
+      state.copyWith(
+        currentRide: currentRide,
+        // status: currentRide == BusRide.emptyBusRide
+        //     ? KanaBusStatus.error
+        //     : KanaBusStatus.loaded,
+      ),
+    );
   }
 
   void _onEditBusRide(EditBusRide event, Emitter<KanaBusState> emit) {

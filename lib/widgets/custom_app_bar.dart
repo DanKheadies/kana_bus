@@ -17,12 +17,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           builder: (context, state) {
             if (state.currentRide.kanaBusms.isNotEmpty) {
               return IconButton(
-                tooltip: 'Delete All',
-                icon: Icon(Icons.delete),
+                tooltip: 'New Ride',
+                icon: Icon(Icons.fiber_new),
                 onPressed: () {
-                  context.read<KanaBusBloc>().add(
-                    RemoveBusm(index: 0, removeAll: true),
+                  KanaBusHelper.sendSnack(
+                    context,
+                    'Long press for a new ride.',
                   );
+                },
+                onLongPress: () {
+                  context.read<KanaBusBloc>().add(LoadCurrentRide(id: ''));
                 },
               );
             } else {

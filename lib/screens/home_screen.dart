@@ -50,9 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: CustomAppBar(),
       bottomNavigationBar: CustomBottomAppBar(),
       drawer: BusRidesDrawer(
-        clearBus: () => context.read<KanaBusBloc>().add(
-          RemoveBusm(index: 0, removeAll: true),
-        ),
+        clearBus: () =>
+            context.read<KanaBusBloc>().add(LoadCurrentRide(id: '')),
         toggleOrder: () {
           context.read<SettingsCubit>().toggleOrder();
           setState(() {

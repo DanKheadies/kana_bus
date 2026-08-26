@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:kana_bus/barrel.dart';
 
@@ -24,15 +25,14 @@ class RidesScreen extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: state.busRides.length,
                   itemBuilder: (context, index) {
-                    String flags = '';
+                    String flags = state.busRides[index].id;
                     String genericTitle =
                         'This Ride (${state.busRides[index].kanaBusms.length})';
                     if (state.busRides[index].flags != null &&
                         state.busRides[index].flags!.isNotEmpty) {
-                      String flagsCommas = state.busRides[index].flags!.join(
-                        ', ',
-                      );
-                      flags = flagsCommas.substring(0, flagsCommas.length - 2);
+                      // String flagsCommas
+                      flags = state.busRides[index].flags!.join(', ');
+                      // flags = flagsCommas.substring(0, flagsCommas.length);
                     }
 
                     return ExpansionTile(
@@ -44,9 +44,17 @@ class RidesScreen extends StatelessWidget {
                       ),
                       subtitle: Text(flags, overflow: TextOverflow.ellipsis),
                       trailing: IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: Icon(
+                          Icons.rebase_edit,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        tooltip: 'Load this ride',
                         onPressed: () {
-                          KanaBusHelper.sendSnack(context, 'TODO: edit');
+                          // KanaBusHelper.sendSnack(context, 'TODO: edit');
+                          context.read<KanaBusBloc>().add(
+                            LoadCurrentRide(id: state.busRides[index].id),
+                          );
+                          context.goNamed('home');
                         },
                       ),
                       childrenPadding: const EdgeInsets.only(left: 16),

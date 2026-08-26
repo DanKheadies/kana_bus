@@ -33,6 +33,15 @@ class GetBusRides extends KanaBusEvent {
   List<Object?> get props => [];
 }
 
+class LoadCurrentRide extends KanaBusEvent {
+  final String id;
+
+  const LoadCurrentRide({required this.id});
+
+  @override
+  List<Object> get props => [id];
+}
+
 class RemoveBusm extends KanaBusEvent {
   final bool? removeAll;
   final int index;

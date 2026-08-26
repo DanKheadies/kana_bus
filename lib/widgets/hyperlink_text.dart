@@ -98,11 +98,11 @@ class _HyperlinkTextState extends State<HyperlinkText> {
             style:
                 widget.style?.copyWith(
                   color: isClicked
-                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      ? Theme.of(context).colorScheme.primary
                       : isHovering
                       ? Theme.of(context).colorScheme.tertiary
                       : widget.defaultActionColor!
-                      ? Theme.of(context).colorScheme.primary
+                      ? Theme.of(context).primaryColor
                       : Theme.of(
                           context,
                         ).colorScheme.surface.withAlpha(widget.alpha!),
@@ -110,13 +110,13 @@ class _HyperlinkTextState extends State<HyperlinkText> {
                       ? TextDecoration.underline
                       : TextDecoration.none,
                 ) ??
-                Theme.of(context).textTheme.bodySmall!.copyWith(
+                Theme.of(context).textTheme.bodyMedium!.copyWith(
                   color: isClicked
-                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      ? Theme.of(context).colorScheme.primary
                       : isHovering
                       ? Theme.of(context).colorScheme.tertiary
                       : widget.defaultActionColor!
-                      ? Theme.of(context).colorScheme.primary
+                      ? Theme.of(context).primaryColor
                       : Theme.of(
                           context,
                         ).colorScheme.surface.withAlpha(widget.alpha!),

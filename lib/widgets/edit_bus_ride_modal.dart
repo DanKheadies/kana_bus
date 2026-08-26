@@ -200,6 +200,9 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
               titleCont.text == '' || !hasChanged
               ? null
               : () {
+                  setState(() {
+                    hasChanged = false;
+                  });
                   context.read<KanaBusBloc>().add(
                     EditBusRide(
                       currentRide: state.currentRide.copyWith(
@@ -207,9 +210,7 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
                       ),
                     ),
                   );
-                  setState(() {
-                    hasChanged = false;
-                  });
+                  Navigator.of(context).pop();
                 },
           child: Text('Update'),
         ),
