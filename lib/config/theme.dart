@@ -60,6 +60,9 @@ ThemeData lightTheme() {
       ),
     ),
     primaryColor: lightActionBlue,
+    // progressIndicatorTheme: ProgressIndicatorThemeData(
+    //   color: lightBackgroundWhite,
+    // ),
     scaffoldBackgroundColor: lightBackgroundWhite,
     snackBarTheme: const SnackBarThemeData(
       actionTextColor: lightActionBlue,
@@ -132,6 +135,9 @@ ThemeData darkTheme() {
       ),
     ),
     primaryColor: darkActionBlue,
+    // progressIndicatorTheme: ProgressIndicatorThemeData(
+    //   color: darkBackgroundBlacker,
+    // ),
     scaffoldBackgroundColor: darkBackgroundBlacker,
     snackBarTheme: const SnackBarThemeData(
       actionTextColor: darkActionBlue,

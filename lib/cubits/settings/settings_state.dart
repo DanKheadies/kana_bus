@@ -2,32 +2,32 @@ part of 'settings_cubit.dart';
 
 class SettingsState extends Equatable {
   final bool isDarkTheme;
-  final bool isFirstCome;
+  final bool isNewestAtTop;
 
-  const SettingsState({required this.isDarkTheme, required this.isFirstCome});
+  const SettingsState({required this.isDarkTheme, required this.isNewestAtTop});
 
   @override
-  List<Object> get props => [isDarkTheme, isFirstCome];
+  List<Object> get props => [isDarkTheme, isNewestAtTop];
 
   factory SettingsState.initial() {
-    return SettingsState(isDarkTheme: false, isFirstCome: true);
+    return SettingsState(isDarkTheme: false, isNewestAtTop: true);
   }
 
-  SettingsState copyWith({bool? isDarkTheme, bool? isFirstCome}) {
+  SettingsState copyWith({bool? isDarkTheme, bool? isNewestAtTop}) {
     return SettingsState(
       isDarkTheme: isDarkTheme ?? this.isDarkTheme,
-      isFirstCome: isFirstCome ?? this.isFirstCome,
+      isNewestAtTop: isNewestAtTop ?? this.isNewestAtTop,
     );
   }
 
   factory SettingsState.fromJson(Map<String, dynamic> json) {
     return SettingsState(
       isDarkTheme: json['isDarkTheme'],
-      isFirstCome: json['isFirstCome'],
+      isNewestAtTop: json['isNewestAtTop'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'isDarkTheme': isDarkTheme, 'isFirstCome': isFirstCome};
+    return {'isDarkTheme': isDarkTheme, 'isNewestAtTop': isNewestAtTop};
   }
 }

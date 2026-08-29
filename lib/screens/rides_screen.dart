@@ -30,9 +30,7 @@ class RidesScreen extends StatelessWidget {
                         'This Ride (${state.busRides[index].kanaBusms.length})';
                     if (state.busRides[index].flags != null &&
                         state.busRides[index].flags!.isNotEmpty) {
-                      // String flagsCommas
                       flags = state.busRides[index].flags!.join(', ');
-                      // flags = flagsCommas.substring(0, flagsCommas.length);
                     }
 
                     return ExpansionTile(
@@ -74,26 +72,16 @@ class RidesScreen extends StatelessWidget {
                           onHyperlink: state.status == KanaBusStatus.updating
                               ? null
                               : () {
-                                  KanaBusHelper.sendSnack(
-                                    context,
-                                    'TODO: archive',
+                                  context.read<KanaBusBloc>().add(
+                                    EditBusRide(
+                                      currentRide: state.busRides[index]
+                                          .copyWith(
+                                            isArchived: !state
+                                                .busRides[index]
+                                                .isArchived!,
+                                          ),
+                                    ),
                                   );
-                                  // context.read<StoryBloc>().add(
-                                  //   UpdateStory(
-                                  //     editedStory: state.stories[index]
-                                  //         .copyWith(
-                                  //           isArchived:
-                                  //               state
-                                  //                       .stories[index]
-                                  //                       .isArchived ==
-                                  //                   null
-                                  //               ? true
-                                  //               : !state
-                                  //                     .stories[index]
-                                  //                     .isArchived!,
-                                  //         ),
-                                  //   ),
-                                  // );
                                 },
                           label: 'isArchived',
                           value: state.status == KanaBusStatus.updating

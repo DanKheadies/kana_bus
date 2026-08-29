@@ -1,18 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kana_bus/barrel.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+  final Function()? clearInputs;
+
+  const CustomAppBar({super.key, this.clearInputs});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: GestureDetector(
+        onTap: () => context.goNamed('home'),
         onDoubleTap: () => context.read<SettingsCubit>().toggleTheme(),
-        child: Text('Kana Bus'),
+        child: Text('かな Bus'),
       ),
       actions: [
+        BlocBuilder<KanaBusBloc, KanaBusState>(
+          builder: (context, state) {
+            if (state.status == KanaBusStatus.translating) {
+              return GestureDetector(
+                onDoubleTap: () {
+                  context.read<KanaBusBloc>().add(ResetTranslator());
+                  clearInputs;
+                },
+                child: CircularProgressIndicator(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20, // 5,
+                    vertical: 20, // 0,
+                  ),
+                ),
+              );
+            } else {
+              return const SizedBox();
+            }
+          },
+        ),
         BlocBuilder<KanaBusBloc, KanaBusState>(
           builder: (context, state) {
             if (state.currentRide.kanaBusms.isNotEmpty) {

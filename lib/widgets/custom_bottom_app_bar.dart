@@ -34,49 +34,63 @@ class CustomBottomAppBar extends StatelessWidget {
           ),
           const SizedBox(),
           const SizedBox(),
-          SizedBox(
-            width: 50,
-            child: BlocBuilder<KanaBusBloc, KanaBusState>(
-              builder: (context, state) {
-                return state.status == KanaBusStatus.updating
-                    ? CircularProgressIndicator(padding: EdgeInsets.all(12))
-                    : IconButton(
-                        tooltip: 'Save',
-                        icon: Icon(
-                          Icons.save,
-                          color: Theme.of(context).primaryColor.withAlpha(
-                            context
-                                    .read<KanaBusBloc>()
-                                    .state
-                                    .currentRide
-                                    .kanaBusms
-                                    .isEmpty
-                                ? 100
-                                : 255,
+          BlocListener<KanaBusBloc, KanaBusState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status,
+            listener: (context, state) {
+              if (state.status == KanaBusStatus.updated) {
+                KanaBusHelper.sendSnack(context, 'Your ride has been saved.');
+              }
+            },
+            child: SizedBox(
+              width: 50,
+              child: BlocBuilder<KanaBusBloc, KanaBusState>(
+                builder: (context, state) {
+                  return state.status == KanaBusStatus.updating
+                      ? CircularProgressIndicator(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10, // 5,
+                            vertical: 8, // 0,
                           ),
-                          size: 30,
-                        ),
-                        onPressed:
-                            context
-                                .read<KanaBusBloc>()
-                                .state
-                                .currentRide
-                                .kanaBusms
-                                .isEmpty
-                            ? null
-                            : () {
-                                context.read<KanaBusBloc>().add(
-                                  EditBusRide(
-                                    andUpdate: true,
-                                    currentRide: context
-                                        .read<KanaBusBloc>()
-                                        .state
-                                        .currentRide,
-                                  ),
-                                );
-                              },
-                      );
-              },
+                        )
+                      : IconButton(
+                          tooltip: 'Save',
+                          icon: Icon(
+                            Icons.save,
+                            color: Theme.of(context).primaryColor.withAlpha(
+                              context
+                                      .read<KanaBusBloc>()
+                                      .state
+                                      .currentRide
+                                      .kanaBusms
+                                      .isEmpty
+                                  ? 100
+                                  : 255,
+                            ),
+                            size: 30,
+                          ),
+                          onPressed:
+                              context
+                                  .read<KanaBusBloc>()
+                                  .state
+                                  .currentRide
+                                  .kanaBusms
+                                  .isEmpty
+                              ? null
+                              : () {
+                                  context.read<KanaBusBloc>().add(
+                                    EditBusRide(
+                                      andUpdate: true,
+                                      currentRide: context
+                                          .read<KanaBusBloc>()
+                                          .state
+                                          .currentRide,
+                                    ),
+                                  );
+                                },
+                        );
+                },
+              ),
             ),
           ),
         ],

@@ -10,7 +10,7 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit() : log = Logger(), super(SettingsState.initial());
 
   void toggleOrder() {
-    emit(state.copyWith(isFirstCome: !state.isFirstCome));
+    emit(state.copyWith(isNewestAtTop: !state.isNewestAtTop));
   }
 
   void toggleTheme() {

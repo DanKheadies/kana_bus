@@ -49,19 +49,18 @@ class BusRidesDrawer extends StatelessWidget {
               hoverColor: Theme.of(context).primaryColor.withAlpha(30),
             ),
             const SizedBox(height: 15),
-            // if (isFirstCome != null && toggleOrder != null) ...[],
             BlocBuilder<SettingsCubit, SettingsState>(
               builder: (context, state) {
                 return ListTile(
                   title: Text(
-                    'Bus Order (Newest at ${state.isFirstCome ? 'Bottom' : 'Top'})',
+                    'Bus Order (Newest at ${state.isNewestAtTop ? 'Bottom' : 'Top'})',
                     style: TextStyle(
                       fontSize: 18,
                       color: Theme.of(context).primaryColor,
                     ),
                   ),
                   leading: Icon(
-                    state.isFirstCome ? Icons.toggle_on : Icons.toggle_off,
+                    state.isNewestAtTop ? Icons.toggle_on : Icons.toggle_off,
                     color: Theme.of(context).primaryColor,
                   ),
                   onTap: toggleOrder,

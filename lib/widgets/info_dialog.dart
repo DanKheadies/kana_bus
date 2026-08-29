@@ -14,7 +14,7 @@ class InfoDialog extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                'Kana Bus',
+                'かな (Kana) Bus',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.surface,
                   fontSize: 16,
@@ -24,7 +24,6 @@ class InfoDialog extends StatelessWidget {
             const SizedBox(height: 15, width: double.infinity),
             Wrap(
               alignment: WrapAlignment.start,
-              // crossAxisAlignment: WrapCrossAlignment.start,
               children: [
                 Text(
                   'Translate ',
@@ -100,7 +99,7 @@ class InfoDialog extends StatelessWidget {
             ),
             const SizedBox(height: 25),
             Text(
-              'For the Kana Translation, lowercase input will result in hiragana and uppercase text will result in katakana.',
+              'Double tap the input or bottom button to cycle input type. Slide the busms for more options.',
               style: TextStyle(color: Theme.of(context).colorScheme.surface),
             ),
           ],

@@ -1,14 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:kana_bus/barrel.dart';
 import 'package:logger/web.dart';
 // import 'package:kana_bus/barrel.dart';
 
 class DatabaseRepository {
-  final FirebaseFirestore _firebaseFirestore;
-  final Logger _log;
+  // final FirebaseFirestore _firebaseFirestore;
+  // final Logger _log;
 
-  DatabaseRepository({FirebaseFirestore? firebaseFirestore, Logger? logger})
-    : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance,
-      _log = logger ?? Logger();
+  DatabaseRepository({FirebaseFirestore? firebaseFirestore, Logger? logger});
+  // : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance,
+  //   _log = logger ?? Logger();
+
+  Future<TranslationResult> translateWord(
+    String text,
+    TranslationType type,
+  ) async {
+    final callable = FirebaseFunctions.instance.httpsCallable('translateWord');
+    final result = await callable.call<Map<String, dynamic>>({
+      'text': text,
+      'sourceType': type.name,
+    });
+    print('back');
+    print(result);
+    // return TranslationResult.fromJson(result.data);
+    // Casting via Map<String, dynamic>.from handles the JS-interop map shape on web.
+    return TranslationResult.fromJson(Map<String, dynamic>.from(result.data));
+  }
 
   /// (Firebase) Get a list of stories
   // Future<List<Story>> getStories(bool? showArchived) async {

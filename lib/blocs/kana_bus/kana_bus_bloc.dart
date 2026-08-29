@@ -14,86 +14,41 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
   KanaBusBloc({required this.databaseRepository, this.log})
     : super(KanaBusState.initial()) {
     on<AddBusm>(_onAddBusm);
+    on<CycleType>(_onCycleType);
     on<EditBusRide>(_onEditBusRide);
     on<GetBusRides>(_onGetBusRides);
     on<LoadCurrentRide>(_onLoadCurrentRide);
     on<RemoveBusm>(_onRemoveBusm);
+    on<ResetTranslator>(_onResetTranslator);
+    on<Translate>(_onTranslate);
     on<TriggerLoading>(_onTriggerLoading);
     on<UpdateBusRide>(_onUpdateBusRide);
   }
 
-  void _onLoadCurrentRide(LoadCurrentRide event, Emitter<KanaBusState> emit) {
-    BusRide currentRide = BusRide.emptyBusRide;
-    List<BusRide> rides = state.busRides.toList();
+  Future<void> _onTranslate(Translate event, Emitter<KanaBusState> emit) async {
+    if (state.status == KanaBusStatus.translating) return;
+    emit(state.copyWith(status: KanaBusStatus.translating));
 
-    int index = rides.indexWhere((bs) => bs.id == event.id);
-    if (index >= 0) {
-      print('ride index: $index');
-      currentRide = rides[index];
-    }
+    TranslationResult translation = TranslationResult(
+      original: '',
+      english: '',
+      japanese: '',
+      romaji: '',
+    );
+
+    translation = await databaseRepository.translateWord(
+      event.input,
+      event.type,
+    );
+    // print('translation: ');
+    // print(translation.original);
+    // print(translation.english);
+    // print(translation.japanese);
+    // print(translation.romaji);
 
     emit(
-      state.copyWith(
-        currentRide: currentRide,
-        // status: currentRide == BusRide.emptyBusRide
-        //     ? KanaBusStatus.error
-        //     : KanaBusStatus.loaded,
-      ),
+      state.copyWith(status: KanaBusStatus.loaded, translation: translation),
     );
-  }
-
-  void _onEditBusRide(EditBusRide event, Emitter<KanaBusState> emit) {
-    BusRide ride = state.currentRide;
-    List<BusRide> rides = state.busRides.toList();
-
-    // if id == '', then just save locally
-    if (ride.id == '') {
-      print('no id');
-      DateTime now = DateTime.now().toUtc();
-      ride = ride.copyWith(
-        createdOn: now,
-        flags: event.currentRide.flags,
-        id: UuidV4().generate(),
-        kanaBusms: state.currentRide.kanaBusms,
-        title: event.currentRide.title,
-        updatedOn: now,
-      );
-      print('ride: $ride');
-      // } else if () {}
-      // else, should check if is FirebaseId vs UUID to know if we save online or
-      // just continue to save locally
-    } else {
-      print('update: ${ride.id}');
-      ride = ride.copyWith(
-        flags: event.currentRide.flags,
-        title: event.currentRide.title,
-        updatedOn: DateTime.now().toUtc(),
-      );
-    }
-
-    int index = rides.indexWhere((bs) => bs.id == ride.id);
-    if (index >= 0) {
-      print('index: $index');
-      rides[index] = ride;
-    } else {
-      print('not in list');
-      rides.add(ride);
-    }
-
-    if (event.andUpdate ?? false) {
-      print('and update');
-      emit(state.copyWith(busRides: rides));
-      add(UpdateBusRide(currentRide: ride));
-    } else {
-      print('just edit');
-      emit(
-        state.copyWith(
-          busRides: rides,
-          currentRide: ride,
-          // status: KanaBusStatus.updated,
-        ),
-      );
-    }
   }
 
   Future<void> _onTriggerLoading(
@@ -122,20 +77,26 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
     // if to Firebase, should replace Ids
     await Future.delayed(Duration(milliseconds: 1000));
 
-    // var response = 'derp';
+    bool isFirebaseAccount = 1 + 1 == 3;
+    if (isFirebaseAccount) {
+      var response = 'callFirebaseToGetSetDocument';
+      // var response = await databaseRepository.getRideById(
+      //   id: ride.id,
+      // );
+      // ride = BusRide.fromJson(response['data']);
+      if (ride.id.contains('-')) {
+        // TODO: update id to use Firebase id now
+        ride = ride.copyWith(id: response);
+      }
+    } else {}
 
-    // // if id isUuid, then sub the Firebase id and update the list
-    // if (ride.id == isUuid()) {
-    //   ride = ride.copyWith(id: response);
-
-    //   int index = rides.indexWhere((bs) => bs.id == ride.id);
-    //   if (index >= 0) {
-    //     print('index: $index');
-    //     rides[index] = ride;
-    //   } else {
-    //     print('not in list');
-    //   }
-    // }
+    int index = rides.indexWhere((bs) => bs.id == event.currentRide.id);
+    if (index >= 0) {
+      // print('index: $index');
+      rides[index] = ride;
+      // } else {
+      //   print('not in list');
+    }
 
     emit(
       state.copyWith(
@@ -147,17 +108,73 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
   }
 
   void _onAddBusm(AddBusm event, Emitter<KanaBusState> emit) {
-    if (state.status == KanaBusStatus.updating) return;
-    emit(state.copyWith(status: KanaBusStatus.updating));
-
     BusRide currentBusRide = state.currentRide;
     List<Busm> busmList = currentBusRide.kanaBusms.toList();
     busmList.add(event.newBusm);
 
+    add(EditBusRide(currentRide: currentBusRide.copyWith(kanaBusms: busmList)));
+  }
+
+  void _onEditBusRide(EditBusRide event, Emitter<KanaBusState> emit) {
+    BusRide ride = event.currentRide;
+    List<BusRide> rides = state.busRides.toList();
+
+    // No id, add local / uuid and instantiate
+    if (ride.id == '') {
+      DateTime now = DateTime.now().toUtc();
+      ride = ride.copyWith(
+        createdOn: now,
+        flags: event.currentRide.flags,
+        id: UuidV4().generate(),
+        kanaBusms: event.currentRide.kanaBusms,
+        title: event.currentRide.title,
+        updatedOn: now,
+      );
+      // print('ride: $ride');
+    } else {
+      // print('update: ${ride.id}');
+      ride = ride.copyWith(
+        flags: event.currentRide.flags?.toList(),
+        isArchived: event.currentRide.isArchived,
+        kanaBusms: event.currentRide.kanaBusms.toList(),
+        title: event.currentRide.title,
+        updatedOn: DateTime.now().toUtc(),
+      );
+    }
+
+    int index = rides.indexWhere((bs) => bs.id == ride.id);
+    if (index >= 0) {
+      // print('index: $index');
+      rides[index] = ride;
+    } else {
+      // print('not in list');
+      rides.add(ride);
+    }
+
+    if (event.andUpdate ?? false) {
+      // print('and update');
+      emit(state.copyWith(busRides: rides));
+      add(UpdateBusRide(currentRide: ride));
+    } else {
+      // print('just edit');
+      emit(
+        state.copyWith(
+          busRides: rides,
+          currentRide: ride,
+          // status: KanaBusStatus.updated,
+        ),
+      );
+    }
+  }
+
+  void _onCycleType(CycleType event, Emitter<KanaBusState> emit) {
     emit(
       state.copyWith(
-        currentRide: currentBusRide.copyWith(kanaBusms: busmList),
-        status: KanaBusStatus.updated,
+        currentType: state.currentType == TranslationType.english
+            ? TranslationType.japanese
+            : state.currentType == TranslationType.japanese
+            ? TranslationType.romaji
+            : TranslationType.english,
       ),
     );
   }
@@ -170,6 +187,26 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
     // TODO: get rides from Firebase
 
     emit(state.copyWith(busRides: ridesList, status: KanaBusStatus.loaded));
+  }
+
+  void _onLoadCurrentRide(LoadCurrentRide event, Emitter<KanaBusState> emit) {
+    BusRide currentRide = BusRide.emptyBusRide;
+    List<BusRide> rides = state.busRides.toList();
+
+    int index = rides.indexWhere((bs) => bs.id == event.id);
+    if (index >= 0) {
+      // print('ride index: $index');
+      currentRide = rides[index];
+    }
+
+    emit(
+      state.copyWith(
+        currentRide: currentRide,
+        // status: currentRide == BusRide.emptyBusRide
+        //     ? KanaBusStatus.error
+        //     : KanaBusStatus.loaded,
+      ),
+    );
   }
 
   void _onRemoveBusm(RemoveBusm event, Emitter<KanaBusState> emit) {
@@ -192,6 +229,10 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
         status: KanaBusStatus.updated,
       ),
     );
+  }
+
+  void _onResetTranslator(ResetTranslator event, Emitter<KanaBusState> emit) {
+    emit(state.copyWith(status: KanaBusStatus.loaded));
   }
 
   @override

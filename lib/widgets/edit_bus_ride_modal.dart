@@ -71,8 +71,8 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.fastEaseInToSlowEaseOut,
                         child: GestureDetector(
-                          onTap:
-                              () {}, // Avoid clicking the modal to dismiss it.
+                          // Avoid clicking the modal to dismiss it.
+                          onTap: () {},
                           child: Container(
                             width: isWorking ? null : 450,
                             constraints: isWorking
@@ -132,11 +132,10 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
             });
           },
           isDisabled: false,
+          textCapitalization: TextCapitalization.sentences,
         ),
         const SizedBox(height: 15),
         SizedBox(
-          // padding: rowPadding,
-          // width: widget.width < 850 ? widget.width : 500,
           width: 450,
           child: Column(
             children: [
@@ -151,6 +150,7 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
                       // onEnter: (_) =>
                       onEditingComplete: () =>
                           addFlag(context, state.currentRide),
+                      textCapitalization: TextCapitalization.words,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -193,11 +193,7 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
         ),
         const SizedBox(height: 18),
         ElevatedButton(
-          onPressed:
-              // (widget.currentRide.title == titleCont.text ||
-              // TODO: logic; adding / removing flags edits auto and could ignore
-              // the restriction here (currently does), but UX seems off..
-              titleCont.text == '' || !hasChanged
+          onPressed: titleCont.text == '' || !hasChanged
               ? null
               : () {
                   setState(() {

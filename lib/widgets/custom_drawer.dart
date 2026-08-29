@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kana_bus/barrel.dart';
@@ -31,7 +30,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            Center(child: Text('Kana Bus', style: TextStyle(fontSize: 18))),
+            Center(child: Text('かな Bus', style: TextStyle(fontSize: 18))),
             const SizedBox(height: 15),
             ListTile(
               title: Text(
