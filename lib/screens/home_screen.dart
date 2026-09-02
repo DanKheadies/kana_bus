@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Scaffold(
-        appBar: CustomAppBar(clearInputs: () => clear()),
+        appBar: CustomAppBar(clearInputs: clear, isHome: true),
         bottomNavigationBar: CustomBottomAppBar(),
         drawer: BusRidesDrawer(
           clearBus: () =>
@@ -268,49 +268,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       textColor: Theme.of(context).colorScheme.secondary,
                     ),
                     const SizedBox(height: 20),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              // print('current: ${state.currentRide.title}');
-                              return EditBusRideModal(
-                                currentRide: state.currentRide,
-                              );
-                            },
-                          );
-                        },
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 30,
-                          // color: Colors.red.shade100,
-                          child: Row(
-                            children: [
-                              Flexible(
-                                flex: 1,
-                                child: Divider(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                              const SizedBox(width: 15),
-                              Text(
-                                rideTitle,
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                              const SizedBox(width: 5),
-                              Icon(
-                                // Icons.rebase_edit,
-                                Icons.edit_note,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    ClickableDivider(
+                      text: rideTitle,
+                      icon: Icons.edit_note,
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return EditBusRideModal(
+                              currentRide: state.currentRide,
+                            );
+                          },
+                        );
+                      },
                     ),
                     const SizedBox(height: 10),
                     Expanded(
@@ -386,7 +356,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool hasMatchingTranslations(BuildContext context) {
     TranslationType type = context.read<KanaBusBloc>().state.currentType;
-    print('type: $type');
     return type == TranslationType.english
         ? cachedInput == englishCont.text
         : type == TranslationType.japanese
@@ -458,29 +427,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget inputButton(BuildContext context) {
     bool isNonsense = isNonsensical(context);
-    // print('isNonsense: $isNonsense');
     bool shouldSave =
         inputCont.text != '' &&
         inputCont.text == cachedInput &&
         !isNonsense &&
         hasMatchingTranslations(context);
-    // print('shouldSave: $shouldSave');
     bool shouldTranslate =
         !shouldSave && (inputCont.text != '' && !isNonsense) ||
         (inputCont.text != cachedInput && !isNonsense);
-    // print('shouldTranslate: $shouldTranslate');
 
     return BlocBuilder<KanaBusBloc, KanaBusState>(
       builder: (context, state) {
         bool isTranslating = state.status == KanaBusStatus.translating;
-        // print('isTranslating: $isTranslating');
-        // print('inputCont.text: ${inputCont.text}');
 
         return Tooltip(
           message: isTranslating
               ? 'Loading'
               : inputCont.text == ''
               ? 'Focus Input'
+              : isNonsense
+              ? 'Clear'
+              : shouldTranslate
+              ? 'Translate'
               : 'Take a Seat',
           child: GestureDetector(
             onTap: isTranslating
@@ -494,7 +462,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       focusInput.requestFocus();
                     } else {
                       if (shouldSave) {
-                        // print('shouldSave');
                         save();
                         closeKeyboard();
                         clear();
@@ -512,7 +479,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
             onDoubleTap: isTranslating
                 ? null
-                : () => context.read<KanaBusBloc>().add(CycleType()),
+                : () {
+                    context.read<KanaBusBloc>().add(CycleType());
+                    setState(() {});
+                  },
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               onEnter: (_) => setState(() {

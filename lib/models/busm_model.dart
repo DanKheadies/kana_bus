@@ -55,6 +55,10 @@ class Busm extends Equatable {
     //     : null;
     DateTime created = DateTime.tryParse(json['createdAt']) ?? DateTime.now();
 
+    if (created.isUtc) {
+      created = created.toLocal();
+    }
+
     return Busm(
       createdAt: created,
       english: json['english'],
@@ -67,7 +71,7 @@ class Busm extends Equatable {
 
   Map<String, dynamic> toJson() {
     return {
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': createdAt.toUtc().toIso8601String(),
       'english': english,
       'id': id,
       'input': input,

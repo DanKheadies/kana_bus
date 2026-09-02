@@ -9,8 +9,10 @@ import 'package:kana_bus/barrel.dart';
 /// series. Futher information can be provide to help with referencing, ease of
 /// recall, and general organization.
 class BusRide extends Equatable {
+  final bool isFavorite;
   final bool? isArchived;
   final DateTime? createdOn;
+  final DateTime? lastRide;
   final DateTime? updatedOn;
   final List<Busm> kanaBusms;
   final List<String>? flags;
@@ -24,6 +26,8 @@ class BusRide extends Equatable {
     this.createdOn,
     this.flags,
     this.isArchived = false,
+    this.isFavorite = false,
+    this.lastRide,
     this.title,
     this.updatedOn,
   });
@@ -34,14 +38,18 @@ class BusRide extends Equatable {
     flags,
     id,
     isArchived,
+    isFavorite,
     kanaBusms,
+    lastRide,
     title,
     updatedOn,
   ];
 
   BusRide copyWith({
     bool? isArchived,
+    bool? isFavorite,
     DateTime? createdOn,
+    DateTime? lastRide,
     DateTime? updatedOn,
     List<Busm>? kanaBusms,
     List<String>? flags,
@@ -53,7 +61,9 @@ class BusRide extends Equatable {
       flags: flags ?? this.flags,
       id: id ?? this.id,
       isArchived: isArchived ?? this.isArchived,
+      isFavorite: isFavorite ?? this.isFavorite,
       kanaBusms: kanaBusms ?? this.kanaBusms,
+      lastRide: lastRide ?? this.lastRide,
       title: title ?? this.title,
       updatedOn: updatedOn ?? this.updatedOn,
     );
@@ -68,9 +78,22 @@ class BusRide extends Equatable {
     DateTime? createdOnDT = json['createdOn'] != null
         ? DateTime.tryParse(json['createdOn'])
         : null;
+    DateTime? lastRideDT = json['lastRide'] != null
+        ? DateTime.tryParse(json['lastRide'])
+        : null;
     DateTime? updatedOnDT = json['updatedOn'] != null
         ? DateTime.tryParse(json['updatedOn'])
         : null;
+
+    if (createdOnDT != null && createdOnDT.isUtc) {
+      createdOnDT = createdOnDT.toLocal();
+    }
+    if (lastRideDT != null && lastRideDT.isUtc) {
+      lastRideDT = lastRideDT.toLocal();
+    }
+    if (updatedOnDT != null && updatedOnDT.isUtc) {
+      updatedOnDT = updatedOnDT.toLocal();
+    }
 
     return BusRide(
       createdOn: createdOnDT,
@@ -79,9 +102,11 @@ class BusRide extends Equatable {
           : null,
       id: json['id'],
       isArchived: json['isArchived'],
+      isFavorite: json['isFavorite'],
       kanaBusms: (json['kanaBusms'] as List)
           .map((busm) => Busm.fromJson(busm))
           .toList(),
+      lastRide: lastRideDT,
       title: json['title'],
       updatedOn: updatedOnDT,
     );
@@ -100,11 +125,17 @@ class BusRide extends Equatable {
       'flags': flags,
       'id': id,
       'isArchived': isArchived,
+      'isFavorite': isFavorite,
       'kanaBusms': kanaBusmsList,
+      'lastRide': lastRide?.toUtc().toIso8601String(),
       'title': title,
       'updatedOn': updatedOn?.toUtc().toIso8601String(),
     };
   }
 
-  static const BusRide emptyBusRide = BusRide(id: '', kanaBusms: []);
+  static const BusRide emptyBusRide = BusRide(
+    id: '',
+    isFavorite: false,
+    kanaBusms: [],
+  );
 }

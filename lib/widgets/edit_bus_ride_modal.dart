@@ -134,11 +134,19 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
           isDisabled: false,
           textCapitalization: TextCapitalization.sentences,
         ),
-        const SizedBox(height: 15),
         SizedBox(
           width: 450,
           child: Column(
             children: [
+              const SizedBox(height: 8),
+              ClickableDivider(
+                text: 'Favorite',
+                icon: state.currentRide.isFavorite
+                    ? Icons.check_box
+                    : Icons.check_box_outline_blank,
+                onTap: () => context.read<KanaBusBloc>().add(ToggleFavorite()),
+              ),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Flexible(
@@ -184,7 +192,6 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
                       },
                     ),
                     contentPadding: const EdgeInsets.only(left: 16),
-                    // onLongPress: () {},
                   ),
                 ),
               ],

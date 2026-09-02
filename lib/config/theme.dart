@@ -69,7 +69,9 @@ ThemeData lightTheme() {
       backgroundColor: lightBackgroundWhiter,
       contentTextStyle: TextStyle(color: lightTextBlack),
     ),
-
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: lightActionBlue),
+    ),
     textSelectionTheme: const TextSelectionThemeData(
       cursorColor: lightActionBlue,
     ),
@@ -143,6 +145,9 @@ ThemeData darkTheme() {
       actionTextColor: darkActionBlue,
       backgroundColor: darkBackgroundBlack,
       contentTextStyle: TextStyle(color: darkTextGrey),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: darkActionBlue),
     ),
     textSelectionTheme: const TextSelectionThemeData(
       cursorColor: darkActionBlue,

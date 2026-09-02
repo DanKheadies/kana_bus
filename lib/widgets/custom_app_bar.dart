@@ -4,9 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:kana_bus/barrel.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Function()? clearInputs;
+  final bool? isHome;
+  final VoidCallback? clearInputs;
 
-  const CustomAppBar({super.key, this.clearInputs});
+  const CustomAppBar({super.key, this.clearInputs, this.isHome = false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +24,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               return GestureDetector(
                 onDoubleTap: () {
                   context.read<KanaBusBloc>().add(ResetTranslator());
-                  clearInputs;
+                  if (clearInputs != null) clearInputs!();
                 },
                 child: CircularProgressIndicator(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20, // 5,
-                    vertical: 20, // 0,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 ),
               );
             } else {
@@ -37,39 +35,42 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             }
           },
         ),
-        BlocBuilder<KanaBusBloc, KanaBusState>(
-          builder: (context, state) {
-            if (state.currentRide.kanaBusms.isNotEmpty) {
-              return IconButton(
-                tooltip: 'New Ride',
-                icon: Icon(Icons.fiber_new),
-                onPressed: () {
-                  KanaBusHelper.sendSnack(
-                    context,
-                    'Long press for a new ride.',
-                  );
-                },
-                onLongPress: () {
-                  context.read<KanaBusBloc>().add(LoadCurrentRide(id: ''));
+        if (isHome!) ...[
+          BlocBuilder<KanaBusBloc, KanaBusState>(
+            builder: (context, state) {
+              if (state.currentRide.kanaBusms.isNotEmpty) {
+                return IconButton(
+                  tooltip: 'New Ride',
+                  icon: Icon(Icons.fiber_new),
+                  onPressed: () {
+                    KanaBusHelper.sendSnack(
+                      context,
+                      'Long press for a new ride.',
+                    );
+                  },
+                  onLongPress: () {
+                    context.read<KanaBusBloc>().add(LoadCurrentRide(id: ''));
+                    if (clearInputs != null) clearInputs!();
+                  },
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
+          ),
+          IconButton(
+            tooltip: 'Info',
+            icon: Icon(Icons.info),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return InfoDialog();
                 },
               );
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
-        IconButton(
-          tooltip: 'Info',
-          icon: Icon(Icons.info),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return InfoDialog();
-              },
-            );
-          },
-        ),
+            },
+          ),
+        ],
         IconButton(
           tooltip: 'Menu',
           icon: Icon(Icons.menu),

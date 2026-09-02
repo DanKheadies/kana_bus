@@ -21,8 +21,7 @@ class DatabaseRepository {
       'text': text,
       'sourceType': type.name,
     });
-    print('back');
-    print(result);
+
     // return TranslationResult.fromJson(result.data);
     // Casting via Map<String, dynamic>.from handles the JS-interop map shape on web.
     return TranslationResult.fromJson(Map<String, dynamic>.from(result.data));

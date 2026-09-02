@@ -15,14 +15,40 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
     : super(KanaBusState.initial()) {
     on<AddBusm>(_onAddBusm);
     on<CycleType>(_onCycleType);
+    on<DeleteBusRide>(_onDeleteBusRide);
     on<EditBusRide>(_onEditBusRide);
     on<GetBusRides>(_onGetBusRides);
     on<LoadCurrentRide>(_onLoadCurrentRide);
     on<RemoveBusm>(_onRemoveBusm);
     on<ResetTranslator>(_onResetTranslator);
+    on<ToggleFavorite>(_onToggleFavorite);
     on<Translate>(_onTranslate);
     on<TriggerLoading>(_onTriggerLoading);
     on<UpdateBusRide>(_onUpdateBusRide);
+  }
+
+  Future<void> _onDeleteBusRide(
+    DeleteBusRide event,
+    Emitter<KanaBusState> emit,
+  ) async {
+    if (state.status == KanaBusStatus.updating) return;
+    emit(state.copyWith(status: KanaBusStatus.updating));
+
+    BusRide currentBusRide = state.currentRide.id == event.id
+        ? BusRide.emptyBusRide
+        : state.currentRide;
+    List<BusRide> ridesList = state.busRides.toList();
+    ridesList.removeWhere((ride) => ride.id == event.id);
+
+    await Future.delayed(Duration(milliseconds: 500));
+
+    emit(
+      state.copyWith(
+        busRides: ridesList,
+        currentRide: currentBusRide,
+        status: KanaBusStatus.updated,
+      ),
+    );
   }
 
   Future<void> _onTranslate(Translate event, Emitter<KanaBusState> emit) async {
@@ -121,7 +147,7 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
 
     // No id, add local / uuid and instantiate
     if (ride.id == '') {
-      DateTime now = DateTime.now().toUtc();
+      DateTime now = DateTime.now();
       ride = ride.copyWith(
         createdOn: now,
         flags: event.currentRide.flags,
@@ -138,7 +164,7 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
         isArchived: event.currentRide.isArchived,
         kanaBusms: event.currentRide.kanaBusms.toList(),
         title: event.currentRide.title,
-        updatedOn: DateTime.now().toUtc(),
+        updatedOn: DateTime.now(),
       );
     }
 
@@ -195,18 +221,11 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
 
     int index = rides.indexWhere((bs) => bs.id == event.id);
     if (index >= 0) {
-      // print('ride index: $index');
-      currentRide = rides[index];
+      currentRide = rides[index].copyWith(lastRide: DateTime.now());
+      rides[index] = currentRide;
     }
 
-    emit(
-      state.copyWith(
-        currentRide: currentRide,
-        // status: currentRide == BusRide.emptyBusRide
-        //     ? KanaBusStatus.error
-        //     : KanaBusStatus.loaded,
-      ),
-    );
+    emit(state.copyWith(busRides: rides, currentRide: currentRide));
   }
 
   void _onRemoveBusm(RemoveBusm event, Emitter<KanaBusState> emit) {
@@ -233,6 +252,21 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
 
   void _onResetTranslator(ResetTranslator event, Emitter<KanaBusState> emit) {
     emit(state.copyWith(status: KanaBusStatus.loaded));
+  }
+
+  void _onToggleFavorite(ToggleFavorite event, Emitter<KanaBusState> emit) {
+    BusRide currentBusRide = state.currentRide;
+    List<BusRide> ridesList = state.busRides.toList();
+
+    int index = ridesList.indexWhere((ride) => ride.id == currentBusRide.id);
+    if (index >= 0) {
+      currentBusRide = currentBusRide.copyWith(
+        isFavorite: !currentBusRide.isFavorite,
+      );
+      ridesList[index] = currentBusRide;
+    }
+
+    emit(state.copyWith(busRides: ridesList, currentRide: currentBusRide));
   }
 
   @override

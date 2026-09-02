@@ -4,11 +4,12 @@ class HyperlinkText extends StatefulWidget {
   final bool? defaultActionColor;
   final bool? isDisabled;
   final FocusNode? node;
+  final Function()? onLong;
   final int? alpha;
   final String text;
-  final void Function() onTap;
   final TextAlign? align;
   final TextStyle? style;
+  final void Function() onTap;
 
   const HyperlinkText({
     super.key,
@@ -19,6 +20,7 @@ class HyperlinkText extends StatefulWidget {
     this.defaultActionColor = true,
     this.isDisabled = false,
     this.node,
+    this.onLong,
     this.style,
   });
 
@@ -92,6 +94,7 @@ class _HyperlinkTextState extends State<HyperlinkText> {
               : setState(() {
                   isClicked = false;
                 }),
+          onLongPress: widget.onLong,
           child: Text(
             widget.text,
             textAlign: widget.align,
