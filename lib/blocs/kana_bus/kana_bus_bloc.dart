@@ -19,6 +19,7 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
     on<EditBusRide>(_onEditBusRide);
     on<GetBusRides>(_onGetBusRides);
     on<LoadCurrentRide>(_onLoadCurrentRide);
+    on<LoadScheduledRide>(_onLoadScheduledRide);
     on<RemoveBusm>(_onRemoveBusm);
     on<ResetTranslator>(_onResetTranslator);
     on<ToggleFavorite>(_onToggleFavorite);
@@ -226,6 +227,22 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
     }
 
     emit(state.copyWith(busRides: rides, currentRide: currentRide));
+  }
+
+  void _onLoadScheduledRide(
+    LoadScheduledRide event,
+    Emitter<KanaBusState> emit,
+  ) {
+    BusRide currentRide = BusRide.emptyBusRide.copyWith(
+      createdOn: DateTime.now(),
+      id: UuidV4().generate(),
+      kanaBusms: event.ride.busms.toList(),
+      title: event.ride.title,
+    );
+    List<BusRide> rides = state.busRides.toList();
+    rides.add(currentRide);
+
+    emit(state.copyWith(currentRide: currentRide, busRides: rides));
   }
 
   void _onRemoveBusm(RemoveBusm event, Emitter<KanaBusState> emit) {

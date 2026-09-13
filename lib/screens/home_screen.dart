@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kana_bus/barrel.dart';
 import 'package:uuid/v4.dart';
@@ -83,7 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: BlocBuilder<KanaBusBloc, KanaBusState>(
               builder: (context, state) {
                 List<Busm> busmList = state.currentRide.kanaBusms.toList();
-                String rideTitle = state.currentRide.title ?? 'This Ride';
+                String rideTitle = state.currentRide.title == ''
+                    ? 'This Ride'
+                    : state.currentRide.title;
 
                 if (isNewestAtTop) {
                   busmList.sort((a, b) => a.createdAt.compareTo(b.createdAt));
@@ -155,124 +158,173 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     const SizedBox(height: 8, width: double.infinity),
-                    BusmPane(
-                      controller: englishCont,
-                      isDisabled: true,
-                      labelWidget: RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.bodyLarge!
-                              .copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceBright.withAlpha(200),
+                    GestureDetector(
+                      onLongPress: () async {
+                        if (englishCont.text.isNotEmpty) {
+                          await Clipboard.setData(
+                            ClipboardData(text: englishCont.text),
+                          );
+                          if (context.mounted) {
+                            KanaBusHelper.sendSnack(
+                              context,
+                              '"${englishCont.text}" copied.',
+                            );
+                          }
+                        }
+                      },
+                      child: BusmPane(
+                        controller: englishCont,
+                        isDisabled: true,
+                        labelWidget: RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceBright.withAlpha(200),
+                                ),
+                            children: [
+                              TextSpan(
+                                text: 'English',
+                                style: Theme.of(context).textTheme.bodyLarge!
+                                    .copyWith(
+                                      color:
+                                          state.currentType !=
+                                              TranslationType.english
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.tertiary
+                                          : Theme.of(context)
+                                                .colorScheme
+                                                .surfaceBright
+                                                .withAlpha(200),
+                                    ),
                               ),
-                          children: [
-                            TextSpan(
-                              text: 'English',
-                              style: Theme.of(context).textTheme.bodyLarge!
-                                  .copyWith(
-                                    color:
-                                        state.currentType !=
-                                            TranslationType.english
-                                        ? Theme.of(context).colorScheme.tertiary
-                                        : Theme.of(context)
-                                              .colorScheme
-                                              .surfaceBright
-                                              .withAlpha(200),
-                                  ),
-                            ),
-                            TextSpan(text: ' Translation'),
-                          ],
+                              TextSpan(text: ' Translation'),
+                            ],
+                          ),
                         ),
+                        label: 'English Translation',
+                        onChanged: (_) {},
+                        onEditingComplete: () {},
+                        onSubmitted: (_) {},
+                        textColor: Theme.of(context).colorScheme.tertiary,
                       ),
-                      label: 'English Translation',
-                      onChanged: (_) {},
-                      onEditingComplete: () {},
-                      onSubmitted: (_) {},
-                      textColor: Theme.of(context).colorScheme.tertiary,
                     ),
                     const SizedBox(height: 8, width: double.infinity),
-                    BusmPane(
-                      controller: kanaCont,
-                      isDisabled: true,
-                      labelWidget: RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.bodyLarge!
-                              .copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceBright.withAlpha(200),
+                    GestureDetector(
+                      onLongPress: () async {
+                        if (kanaCont.text.isNotEmpty) {
+                          await Clipboard.setData(
+                            ClipboardData(text: kanaCont.text),
+                          );
+                          if (context.mounted) {
+                            KanaBusHelper.sendSnack(
+                              context,
+                              '"${kanaCont.text}" copied.',
+                            );
+                          }
+                        }
+                      },
+                      child: BusmPane(
+                        controller: kanaCont,
+                        isDisabled: true,
+                        labelWidget: RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceBright.withAlpha(200),
+                                ),
+                            children: [
+                              TextSpan(
+                                text: 'Kana/ji',
+                                style: Theme.of(context).textTheme.bodyLarge!
+                                    .copyWith(
+                                      color:
+                                          state.currentType !=
+                                              TranslationType.japanese
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.primary
+                                          : Theme.of(context)
+                                                .colorScheme
+                                                .surfaceBright
+                                                .withAlpha(200),
+                                    ),
                               ),
-                          children: [
-                            TextSpan(
-                              text: 'Kana/ji',
-                              style: Theme.of(context).textTheme.bodyLarge!
-                                  .copyWith(
-                                    color:
-                                        state.currentType !=
-                                            TranslationType.japanese
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context)
-                                              .colorScheme
-                                              .surfaceBright
-                                              .withAlpha(200),
-                                  ),
-                            ),
-                            TextSpan(text: ' Translation'),
-                          ],
+                              TextSpan(text: ' Translation'),
+                            ],
+                          ),
                         ),
+                        label: 'Kana/ji Translation',
+                        onChanged: (_) {},
+                        onEditingComplete: () {},
+                        onSubmitted: (_) {},
+                        textColor: Theme.of(context).colorScheme.primary,
                       ),
-                      label: 'Kana/ji Translation',
-                      onChanged: (_) {},
-                      onEditingComplete: () {},
-                      onSubmitted: (_) {},
-                      textColor: Theme.of(context).colorScheme.primary,
                     ),
                     const SizedBox(height: 8, width: double.infinity),
-                    BusmPane(
-                      controller: romajiCont,
-                      isDisabled: true,
-                      labelWidget: RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.bodyLarge!
-                              .copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceBright.withAlpha(200),
+                    GestureDetector(
+                      onLongPress: () async {
+                        if (romajiCont.text.isNotEmpty) {
+                          await Clipboard.setData(
+                            ClipboardData(text: romajiCont.text),
+                          );
+                          if (context.mounted) {
+                            KanaBusHelper.sendSnack(
+                              context,
+                              '"${romajiCont.text}" copied.',
+                            );
+                          }
+                        }
+                      },
+                      child: BusmPane(
+                        controller: romajiCont,
+                        isDisabled: true,
+                        labelWidget: RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceBright.withAlpha(200),
+                                ),
+                            children: [
+                              TextSpan(
+                                text: 'Romaji',
+                                style: Theme.of(context).textTheme.bodyLarge!
+                                    .copyWith(
+                                      color:
+                                          state.currentType !=
+                                              TranslationType.romaji
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.secondary
+                                          : Theme.of(context)
+                                                .colorScheme
+                                                .surfaceBright
+                                                .withAlpha(200),
+                                    ),
                               ),
-                          children: [
-                            TextSpan(
-                              text: 'Romaji',
-                              style: Theme.of(context).textTheme.bodyLarge!
-                                  .copyWith(
-                                    color:
-                                        state.currentType !=
-                                            TranslationType.romaji
-                                        ? Theme.of(
-                                            context,
-                                          ).colorScheme.secondary
-                                        : Theme.of(context)
-                                              .colorScheme
-                                              .surfaceBright
-                                              .withAlpha(200),
-                                  ),
-                            ),
-                            TextSpan(text: ' Translation'),
-                          ],
+                              TextSpan(text: ' Translation'),
+                            ],
+                          ),
                         ),
+                        label: 'Romaji Translation',
+                        onChanged: (_) {},
+                        onEditingComplete: () {},
+                        onSubmitted: (_) {},
+                        textColor: Theme.of(context).colorScheme.secondary,
                       ),
-                      label: 'Romaji Translation',
-                      onChanged: (_) {},
-                      onEditingComplete: () {},
-                      onSubmitted: (_) {},
-                      textColor: Theme.of(context).colorScheme.secondary,
                     ),
                     const SizedBox(height: 20),
                     ClickableDivider(
                       text: rideTitle,
                       icon: Icons.edit_note,
-                      onTap: () {
-                        showDialog(
+                      onTap: () async {
+                        var didUpdate = await showDialog(
                           context: context,
                           builder: (context) {
                             return EditBusRideModal(
@@ -280,6 +332,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           },
                         );
+                        if (didUpdate && context.mounted) {
+                          KanaBusHelper.sendSnack(
+                            context,
+                            'Your changes have been saved.',
+                          );
+                        }
                       },
                     ),
                     const SizedBox(height: 10),

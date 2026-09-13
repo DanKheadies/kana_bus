@@ -75,6 +75,17 @@ class AppRouter {
             ),
           ),
           GoRoute(
+            path: '/guide',
+            name: 'guide',
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const GuideScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) =>
+                      FadeTransition(opacity: animation, child: child),
+            ),
+          ),
+          GoRoute(
             path: '/home',
             name: 'home',
             pageBuilder: (context, state) => CustomTransitionPage(
@@ -107,6 +118,17 @@ class AppRouter {
                       FadeTransition(opacity: animation, child: child),
             ),
           ),
+          GoRoute(
+            path: '/scheduled',
+            name: 'scheduled',
+            pageBuilder: (context, state) => CustomTransitionPage(
+              key: state.pageKey,
+              child: const ScheduledScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) =>
+                      FadeTransition(opacity: animation, child: child),
+            ),
+          ),
         ],
       );
 }
@@ -121,9 +143,11 @@ String? _authGuard(BuildContext context, GoRouterState state) {
     // '/contact',
     // '/contact/:extraInfo',
     '/error',
+    '/guide',
     '/home',
     '/practice',
     '/rides',
+    '/scheduled',
   };
   final isPublic = publicPaths.contains(path);
 

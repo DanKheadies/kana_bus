@@ -12,7 +12,9 @@ class EditBusRideModal extends StatefulWidget {
 }
 
 class _EditBusRideModalState extends State<EditBusRideModal> {
-  bool hasChanged = false;
+  bool canUpdate = false;
+  bool isFavorite = false;
+  List<String> flagsList = [];
   TextEditingController flagCont = TextEditingController();
   TextEditingController titleCont = TextEditingController();
 
@@ -20,11 +22,16 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
   void initState() {
     super.initState();
 
-    titleCont.text = widget.currentRide.title ?? '';
+    flagsList = widget.currentRide.flags != null
+        ? widget.currentRide.flags!.toList()
+        : [];
+    isFavorite = widget.currentRide.isFavorite;
+    titleCont.text = widget.currentRide.title;
   }
 
   @override
   void dispose() {
+    flagCont.dispose();
     titleCont.dispose();
     super.dispose();
   }
@@ -43,9 +50,12 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
                   previous.status != current.status,
               listener: (context, state) {
                 if (state.status == KanaBusStatus.updated) {
-                  sendSnack(context, 'Your changes have been saved.');
+                  Navigator.of(context).pop(true);
                 } else if (state.status == KanaBusStatus.error) {
-                  sendSnack(context, 'There was an error saving your info.');
+                  KanaBusHelper.sendSnack(
+                    context,
+                    'There was an error saving your info.',
+                  );
                 }
               },
               child: BlocBuilder<KanaBusBloc, KanaBusState>(
@@ -58,7 +68,10 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
                     behavior: HitTestBehavior.opaque,
                     onTap: isWorking
                         ? () {
-                            sendSnack(context, 'Please wait for [magic].');
+                            KanaBusHelper.sendSnack(
+                              context,
+                              'Please wait for [magic].',
+                            );
                           }
                         : () => Navigator.of(context).pop(),
                     child: Dialog(
@@ -97,7 +110,7 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
                                   : BoxDecoration(),
                               child: isWorking
                                   ? Center(child: CustomLoadingWidget())
-                                  : buildContent(state),
+                                  : buildContent(),
                             ),
                           ),
                         ),
@@ -113,24 +126,14 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
     );
   }
 
-  void sendSnack(BuildContext context, String content) {
-    ScaffoldMessenger.of(context)
-      ..clearSnackBars()
-      ..showSnackBar(SnackBar(content: Text(content)));
-  }
-
-  Widget buildContent(KanaBusState state) {
+  Widget buildContent() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         BusmPane(
           controller: titleCont,
           label: 'This Ride',
-          onChanged: (value) {
-            setState(() {
-              hasChanged = true;
-            });
-          },
+          onChanged: (value) => hasChanged(),
           isDisabled: false,
           textCapitalization: TextCapitalization.sentences,
         ),
@@ -141,10 +144,15 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
               const SizedBox(height: 8),
               ClickableDivider(
                 text: 'Favorite',
-                icon: state.currentRide.isFavorite
+                icon: isFavorite
                     ? Icons.check_box
                     : Icons.check_box_outline_blank,
-                onTap: () => context.read<KanaBusBloc>().add(ToggleFavorite()),
+                onTap: () {
+                  setState(() {
+                    isFavorite = !isFavorite;
+                  });
+                  hasChanged();
+                },
               ),
               const SizedBox(height: 8),
               Row(
@@ -155,40 +163,36 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
                       controller: flagCont,
                       label: 'Flags',
                       onChanged: (value) {},
-                      // onEnter: (_) =>
                       onEditingComplete: () =>
-                          addFlag(context, state.currentRide),
+                          addFlag(context, widget.currentRide),
                       textCapitalization: TextCapitalization.words,
                     ),
                   ),
                   const SizedBox(width: 10),
                   IconButton(
                     icon: Icon(Icons.add),
-                    onPressed: () => addFlag(context, state.currentRide),
+                    onPressed: () => addFlag(context, widget.currentRide),
                   ),
                 ],
               ),
-              if (state.currentRide.flags != null) ...[
+              if (flagsList.isNotEmpty) ...[
                 ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: state.currentRide.flags!.length,
+                  itemCount: flagsList.length,
                   itemBuilder: (context, index) => ListTile(
-                    title: Text(state.currentRide.flags![index]),
+                    title: Text(flagsList[index]),
                     trailing: IconButton(
                       icon: Icon(Icons.remove),
                       onPressed: () {
-                        List<String> flagsList = state.currentRide.flags!
-                            .toList();
-                        flagsList.remove(state.currentRide.flags![index]);
+                        List<String> flags = flagsList.toList();
+                        flags.remove(flags[index]);
 
-                        context.read<KanaBusBloc>().add(
-                          EditBusRide(
-                            currentRide: state.currentRide.copyWith(
-                              flags: flagsList,
-                            ),
-                          ),
-                        );
+                        setState(() {
+                          flagsList = flags.toList();
+                        });
+
+                        hasChanged();
                       },
                     ),
                     contentPadding: const EdgeInsets.only(left: 16),
@@ -200,21 +204,20 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
         ),
         const SizedBox(height: 18),
         ElevatedButton(
-          onPressed: titleCont.text == '' || !hasChanged
-              ? null
-              : () {
-                  setState(() {
-                    hasChanged = false;
-                  });
+          onPressed: canUpdate
+              ? () {
                   context.read<KanaBusBloc>().add(
                     EditBusRide(
-                      currentRide: state.currentRide.copyWith(
+                      andUpdate: true,
+                      currentRide: widget.currentRide.copyWith(
+                        flags: flagsList,
+                        isFavorite: isFavorite,
                         title: titleCont.text,
                       ),
                     ),
                   );
-                  Navigator.of(context).pop();
-                },
+                }
+              : null,
           child: Text('Update'),
         ),
       ],
@@ -223,17 +226,25 @@ class _EditBusRideModalState extends State<EditBusRideModal> {
 
   void addFlag(BuildContext context, BusRide ride) {
     if (flagCont.text != '') {
-      List<String> flagsList = (ride.flags ?? []).toList();
-      flagsList.add(flagCont.text);
-
-      context.read<KanaBusBloc>().add(
-        EditBusRide(currentRide: ride.copyWith(flags: flagsList)),
-      );
+      List<String> flags = flagsList.toList();
+      flags.add(flagCont.text);
 
       setState(() {
+        flagsList = flags.toList();
         flagCont.clear();
-        hasChanged = true;
       });
+
+      hasChanged();
     }
+  }
+
+  void hasChanged() {
+    setState(() {
+      canUpdate =
+          (flagsList != widget.currentRide.flags &&
+              (flagsList.isNotEmpty || widget.currentRide.flags != null)) ||
+          isFavorite != widget.currentRide.isFavorite ||
+          titleCont.text != widget.currentRide.title;
+    });
   }
 }

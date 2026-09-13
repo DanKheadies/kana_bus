@@ -52,7 +52,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             ListTile(
               title: Text(
-                'All Rides',
+                'Your Rides',
                 style: TextStyle(
                   fontSize: 18,
                   color: Theme.of(context).primaryColor,
@@ -64,6 +64,21 @@ class CustomDrawer extends StatelessWidget {
             ),
             ListTile(
               title: Text(
+                'Scheduled Rides',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              leading: Icon(
+                Icons.commute,
+                color: Theme.of(context).primaryColor,
+              ),
+              onTap: () => context.goNamed('scheduled'),
+              hoverColor: Theme.of(context).primaryColor.withAlpha(30),
+            ),
+            ListTile(
+              title: Text(
                 'Transit Guide',
                 style: TextStyle(
                   fontSize: 18,
@@ -71,7 +86,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               leading: Icon(Icons.map, color: Theme.of(context).primaryColor),
-              onTap: () => print('TODO'), // context.goNamed('contact'),
+              onTap: () => context.goNamed('guide'),
               hoverColor: Theme.of(context).primaryColor.withAlpha(30),
             ),
             ListTile(

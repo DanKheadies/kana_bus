@@ -8,17 +8,11 @@ class BusRideRow extends StatelessWidget {
   final bool? isDrawer;
   final BusRide ride;
   final double calcWidth;
-  // final int index;
   final KanaBusStatus status;
-  // final String flags;
-  // final String genericTitle;
 
   const BusRideRow({
     super.key,
     required this.calcWidth,
-    // required this.flags,
-    // required this.genericTitle,
-    // required this.index,
     required this.ride,
     required this.status,
     this.isDrawer = false,
@@ -34,15 +28,17 @@ class BusRideRow extends StatelessWidget {
 
     return ExpansionTile(
       title: Text(
-        ride.title ?? ride.createdOn?.toIso8601String() ?? genericTitle,
+        ride.title != ''
+            ? ride.title
+            : ride.createdOn?.toIso8601String() ?? genericTitle,
       ),
       subtitle: Text(flags, overflow: TextOverflow.ellipsis),
       trailing: IconButton(
         icon: Icon(Icons.rebase_edit, color: Theme.of(context).primaryColor),
         tooltip: 'Load this ride',
         onPressed: () {
-          // KanaBusHelper.sendSnack(context, 'TODO: edit');
           context.read<KanaBusBloc>().add(LoadCurrentRide(id: ride.id));
+
           if (isDrawer!) {
             Navigator.of(context).pop();
           } else {

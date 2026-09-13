@@ -18,17 +18,17 @@ class BusRide extends Equatable {
   final List<String>? flags;
   // final List<String>? folders;
   final String id;
-  final String? title;
+  final String title;
 
   const BusRide({
     required this.kanaBusms,
     required this.id,
+    required this.title,
     this.createdOn,
     this.flags,
     this.isArchived = false,
     this.isFavorite = false,
     this.lastRide,
-    this.title,
     this.updatedOn,
   });
 
@@ -137,5 +137,6 @@ class BusRide extends Equatable {
     id: '',
     isFavorite: false,
     kanaBusms: [],
+    title: '',
   );
 }
