@@ -56,7 +56,7 @@ Kudasai is a command form of kudasaru, which is an honorific word (kureru). It's
 
 &nbsp;
 
-## Thank You Varities
+<!-- ## Thank You Varities
 
 1. Polite / Normal
    - That really helps. [Tasukarimasu.] たすかります.
@@ -69,7 +69,7 @@ Kudasai is a command form of kudasaru, which is an honorific word (kureru). It's
 5. Casual
    - You're a lifesaver, thanks a lot. [Gachi kami, maji kansha.] がち かみ まじ かんしゃ.
 
-&nbsp;
+&nbsp; -->
 
 ## Color Block Conversion
 
@@ -107,5 +107,51 @@ General Layout:
   - わたし わ きのう いえで えいがを ともだちと みました.
 - Kana (colors)
   - わたし わ (orange) きのう (teal) いえで (green) えいがを (red) ともだちと (purple) みました (teal).
+
+&nbsp;
+
+## How to Make Japanese Sentences
+
+Japanese Sentence Rule: subject > object > verb
+
+"Talk like a S.O.B. (son of a bitch)!"
+
+- English: I eat sushi.
+- Japanese: I sushi eat.
+- Romaji: watashi wa sushi o tabemasu
+- Kana: わたし わ すし お たべます
+
+Verb comes last. Always.
+
+Breakdown:
+
+- Subject - who is doing the action
+- Object - what receives the action
+- Verb - the action (always last)
+- I (subject) sushi (object) eat (verb)
+
+Another:
+
+- English: He drinks water.
+- Japanese: He water drink.
+- Romaji: kare wa mizu o nomimasu
+- Kana: かれ わ みず お のみます
+
+### The Two Imporant Particles
+
+- wa (わ) - marks the topic / subject
+- o (を) - marks the object
+
+- English: I eat sushi.
+- Japanese: I sushi eat.
+- Romaji: watashi WA sushi O tabemasu
+- Kana: わたし わ すし を たべます
+
+- wa (わ) - tells us who
+- o (を) - tells us what
+
+#### thanks sasuke_japan_hub
+
+Note: は (ha) kana was used on the page instead of わ (wa) but "wa" was shown; を (o) kana was used instead of お (o), which tracks.
 
 &nbsp;

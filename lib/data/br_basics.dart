@@ -255,4 +255,55 @@ class BusRideBasics {
       kana: 'これ わ なん です か',
     ),
   ];
+
+  static final List<Busm> mochiBasics = [
+    Busm(
+      createdAt: DateTime.now(),
+      id: UuidV4().generate(),
+      input: '',
+      english: 'this one, please',
+      romaji: 'kore kudasai',
+      kana: 'これ ください',
+    ),
+    Busm(
+      createdAt: DateTime.now(),
+      id: UuidV4().generate(),
+      input: '',
+      english: 'I\'m okay / no thanks (politely refuse anything)',
+      romaji: 'daijoubu desu',
+      kana: 'だいじょうぶ です',
+    ),
+    Busm(
+      createdAt: DateTime.now(),
+      id: UuidV4().generate(),
+      input: '',
+      english: 'excuse me / sorry',
+      romaji: 'sumimasen',
+      kana: 'すみません',
+    ),
+    Busm(
+      createdAt: DateTime.now(),
+      id: UuidV4().generate(),
+      input: '',
+      english: 'how much is it?',
+      romaji: 'ikura desuka',
+      kana: 'いくら ですか',
+    ),
+    Busm(
+      createdAt: DateTime.now(),
+      id: UuidV4().generate(),
+      input: '',
+      english: 'do you speak English?',
+      romaji: 'eigo hanase masuka',
+      kana: 'えいご はなせ ますか',
+    ),
+    Busm(
+      createdAt: DateTime.now(),
+      id: UuidV4().generate(),
+      input: '',
+      english: 'please (add this = instantly polite)',
+      romaji: 'onegai shimasu',
+      kana: 'おねがい します',
+    ),
+  ];
 }

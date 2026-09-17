@@ -14,12 +14,20 @@ class ScheduledBusRide {
   static final List<ScheduledBusRide> allScheduledRides = [
     mariBasics,
     asamiBasics,
+    mochiBasics,
     mariExpressivePhrases,
     hardcorePhrases,
     mePronouns,
     youPronouns,
     himPronouns,
     herPronouns,
+    commonFillers,
+    listeningReactionFillers,
+    thinkingHesitatingFillers,
+    agreementResponseFillers,
+    emotionalCasualFillers,
+    thankYouVariations,
+    moreThanArigato,
   ];
 
   static final ScheduledBusRide mariBasics = ScheduledBusRide(
@@ -32,6 +40,12 @@ class ScheduledBusRide {
     title: 'Traveling Japan Basics',
     subtitle: 'via asami_san111',
     busms: BusRideBasics.asamiBasics,
+  );
+
+  static final ScheduledBusRide mochiBasics = ScheduledBusRide(
+    title: 'Traveling Japan Basics',
+    subtitle: 'via mochi.sensei.japanese',
+    busms: BusRideBasics.mochiBasics,
   );
 
   static final ScheduledBusRide mariExpressivePhrases = ScheduledBusRide(
@@ -68,5 +82,47 @@ class ScheduledBusRide {
     title: 'Pronouns - She',
     subtitle: 'via arika_nihongo',
     busms: BusRidePronouns.herPronouns,
+  );
+
+  static final ScheduledBusRide commonFillers = ScheduledBusRide(
+    title: 'Common Fillers',
+    subtitle: 'via nihongo_note',
+    busms: BusRideFillers.commonFillers,
+  );
+
+  static final ScheduledBusRide listeningReactionFillers = ScheduledBusRide(
+    title: 'Listening / Reaction Fillers',
+    subtitle: 'via nihongo_note',
+    busms: BusRideFillers.listeningReactionFillers,
+  );
+
+  static final ScheduledBusRide thinkingHesitatingFillers = ScheduledBusRide(
+    title: 'Thinking / Hesitating Fillers',
+    subtitle: 'via nihongo_note',
+    busms: BusRideFillers.thinkingHesitatingFillers,
+  );
+
+  static final ScheduledBusRide agreementResponseFillers = ScheduledBusRide(
+    title: 'Agreement / Response Fillers',
+    subtitle: 'via nihongo_note',
+    busms: BusRideFillers.agreementResponseFillers,
+  );
+
+  static final ScheduledBusRide emotionalCasualFillers = ScheduledBusRide(
+    title: 'Emotional / Casual Fillers',
+    subtitle: 'via nihongo_note',
+    busms: BusRideFillers.emotionalCasualFillers,
+  );
+
+  static final ScheduledBusRide thankYouVariations = ScheduledBusRide(
+    title: 'Thank You Variations (Formal to Casual)',
+    subtitle: 'via mochi.sensei.japanese',
+    busms: BusRideThanks.thankYouVariations,
+  );
+
+  static final ScheduledBusRide moreThanArigato = ScheduledBusRide(
+    title: 'There\'s More ',
+    subtitle: 'via learnjapanesewithkoyu',
+    busms: BusRideThanks.moreThanArigato,
   );
 }
