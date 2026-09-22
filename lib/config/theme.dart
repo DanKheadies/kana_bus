@@ -7,7 +7,7 @@ const lightDeepOrange = Color(0xFFF5A500);
 const lightEnglishColor = Color(0xFFe26511);
 const lightErrorColor = Color(0xFFd73a4a);
 const lightKanaColor = Color(0xFF6f42c1);
-const lightRomajiColor = Color(0xFF35c759);
+const lightRomajiColor = Color(0xFF00b300);
 const lightTextBlack = Color(0xFF15141b);
 const lightTextGrey = Color(0xFF4a4a4a);
 

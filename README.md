@@ -39,6 +39,8 @@ Bus Ride > List<Busm> + Context > a collection of busm based on a context
 
 ## Credits:
 
+Thank you Japan.
+
 ### Special Thanks:
 
 - [Flutter](https://flutter.dev/)
