@@ -23,10 +23,29 @@ Typically, "i" and "u" are reduced or eliminated when they are sandwhiched betwe
   - ke [keh] け
   - ko [koh] こ
 - S
-  - sa [sah]
+  - sa [sah] さ
+  - si [see] し
+  - su [suu] す
+  - se [seh] せ
+  - so [soh] そ
 - T
+  - ta [tah] た
+  - ti [tee] ち
+  - tu [tuu] つ
+  - te [teh] て
+  - to [toh] と
 - H
+  - ha [hah] は
+  - hi [hee] ひ
+  - hu [huu] ふ
+  - he [heh] へ
+  - ho [hoh] ほ
 - P
+  - pa [pah] ぱ
+  - pi [pee] ぴ
+  - pu [puu] ぷ
+  - pe [peh] ぺ
+  - po [poh] ぽ
 
 Remember "web security, OK?" https-k
 
@@ -55,21 +74,6 @@ Kudasai is a command form of kudasaru, which is an honorific word (kureru). It's
   - moichido itte kudasai > please say it one more time
 
 &nbsp;
-
-<!-- ## Thank You Varities
-
-1. Polite / Normal
-   - That really helps. [Tasukarimasu.] たすかります.
-2. Casual
-   - Thanks a lot. [Maji kansha.] まじ かんしゃ.
-3. Formal
-   - I really appreciate it. [Kyoshuku desu.] きょしゅく です.
-4. Polite / Normal
-   - Thanks. [Dōmo.] どうも
-5. Casual
-   - You're a lifesaver, thanks a lot. [Gachi kami, maji kansha.] がち かみ まじ かんしゃ.
-
-&nbsp; -->
 
 ## Color Block Conversion
 
@@ -139,19 +143,87 @@ Another:
 
 ### The Two Imporant Particles
 
-- wa (わ) - marks the topic / subject
+- wa (は) - marks the topic / subject
 - o (を) - marks the object
 
 - English: I eat sushi.
 - Japanese: I sushi eat.
 - Romaji: watashi WA sushi O tabemasu
-- Kana: わたし わ すし を たべます
+- Kana: わたし は すし を たべます
 
-- wa (わ) - tells us who
+- wa (は) - tells us who
 - o (を) - tells us what
 
 #### thanks sasuke_japan_hub
 
 Note: は (ha) kana was used on the page instead of わ (wa) but "wa" was shown; を (o) kana was used instead of お (o), which tracks.
+
+&nbsp;
+
+## Particles
+
+- wa (は) - subject
+  - I am Ram
+  - watashi WA Ramu desu
+  - 私はラムです
+- ga (が) - subject
+  - I like ramen
+  - watashi wa raāmen GA suki desu
+  - 私はラーメンが好きです
+- ka (か) - question
+  - who are you?
+  - anata wa dare desu ka
+  - あなたは誰ですか
+- no (の) - belonging
+  - my book
+  - watashi no hon
+  - わたし の ほん
+- mo (も) - also
+  - I'll also eat
+  - わたし も たべます
+- o (を) - object
+  - I eat sushi
+  - sushi o tabemasu
+  - すしをたべます
+- ni (に) - time / location
+  - will meet at 7
+- de (で) - place of action / means
+  - eat by chopsticks
+- e (へ) - towards / directions
+  - go to park
+- to (と) - inclusive
+  - sushi and ramen
+- made (まで) - until
+  - until 7
+- kara (から) - from
+  - I am from USA
+
+#### thanks jhakkasnihongo
+
+&nbsp;
+
+## Common Kanji
+
+- 入 (iri / nyuu) > enter
+- 入口 > entrance
+- 出 (de / shutsu) > exit
+- 出口 > exit
+- 男 (otoko / dan) > man
+- 男性 (dansei) > male
+- 女 (onna / jo) > woman
+- 女性 (josei) > female
+- 駅 (eki) > station
+- 円 (en) > yen
+  - 千円 (sen-en) > ¥1,000 yen
+- 大 (dai / ō) > big
+- 小 (shō / ko) > small
+- 食 (shoku / ta) > eat / food
+- 飲 (in / nomu) > drink
+- 禁煙 (kin'en) > no smoking
+- 無料 (muryou) > free / free of charge
+- 有料 (yuuryou) > paid
+- 営業中 (eigyou chuu) > open
+
+#### thanks joyn.tokyo & moji.learn
 
 &nbsp;

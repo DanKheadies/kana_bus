@@ -69,6 +69,24 @@ ThemeData lightTheme() {
       backgroundColor: lightBackgroundWhiter,
       contentTextStyle: TextStyle(color: lightTextBlack),
     ),
+    switchTheme: SwitchThemeData(
+      trackColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return lightActionBlue;
+        }
+        return lightBackgroundWhite;
+      }),
+      thumbColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return lightTextGrey;
+        }
+        if (states.contains(WidgetState.selected)) {
+          return lightDeepOrange;
+        }
+        return lightActionBlue;
+      }),
+      trackOutlineColor: WidgetStateProperty.all(lightActionBlue),
+    ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(foregroundColor: lightActionBlue),
     ),
@@ -145,6 +163,24 @@ ThemeData darkTheme() {
       actionTextColor: darkActionBlue,
       backgroundColor: darkBackgroundBlack,
       contentTextStyle: TextStyle(color: darkTextGrey),
+    ),
+    switchTheme: SwitchThemeData(
+      trackColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return darkActionBlue;
+        }
+        return darkBackgroundBlack;
+      }),
+      thumbColor: WidgetStateProperty.resolveWith<Color?>((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return darkTextGrey;
+        }
+        if (states.contains(WidgetState.selected)) {
+          return darkDeepPurple;
+        }
+        return darkActionBlue;
+      }),
+      trackOutlineColor: WidgetStateProperty.all(darkActionBlue),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(foregroundColor: darkActionBlue),

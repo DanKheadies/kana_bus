@@ -197,7 +197,9 @@ class KanaBusBloc extends HydratedBloc<KanaBusEvent, KanaBusState> {
   void _onCycleType(CycleType event, Emitter<KanaBusState> emit) {
     emit(
       state.copyWith(
-        currentType: state.currentType == TranslationType.english
+        currentType: event.type != null
+            ? event.type!
+            : state.currentType == TranslationType.english
             ? TranslationType.japanese
             : state.currentType == TranslationType.japanese
             ? TranslationType.romaji

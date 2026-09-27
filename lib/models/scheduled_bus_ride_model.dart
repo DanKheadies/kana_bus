@@ -28,6 +28,7 @@ class ScheduledBusRide {
     emotionalCasualFillers,
     thankYouVariations,
     moreThanArigato,
+    baebBasics,
   ];
 
   static final ScheduledBusRide mariBasics = ScheduledBusRide(
@@ -124,5 +125,17 @@ class ScheduledBusRide {
     title: 'There\'s More ',
     subtitle: 'via learnjapanesewithkoyu',
     busms: BusRideThanks.moreThanArigato,
+  );
+
+  static final ScheduledBusRide baebBasics = ScheduledBusRide(
+    title: 'Baeb Basics',
+    subtitle: 'via realrealjapan',
+    busms: BusRideBaeb.baebBasics,
+  );
+
+  static final ScheduledBusRide consumableDrinks = ScheduledBusRide(
+    title: 'Consumables - Drinks',
+    subtitle: 'via fuka_funjapanese',
+    busms: BusRideConsumables.consumableDrinks,
   );
 }

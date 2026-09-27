@@ -96,5 +96,21 @@ class BusRideThanks {
       romaji: 'gachi kami, maji kansha',
       kana: 'がち かみ まじ かんしゃ',
     ),
+    Busm(
+      createdAt: DateTime.now(),
+      id: UuidV4().generate(),
+      input: '',
+      english: 'thank you for the wonderful meal',
+      romaji: 'gochisousamadeshita',
+      kana: 'ごちそうさまでした',
+    ),
+    Busm(
+      createdAt: DateTime.now(),
+      id: UuidV4().generate(),
+      input: '',
+      english: 'thank you too (after an "arigato")',
+      romaji: 'kochirakoso',
+      kana: 'こちらこそ',
+    ),
   ];
 }

@@ -16,7 +16,14 @@ class AddBusm extends KanaBusEvent {
   List<Object> get props => [newBusm];
 }
 
-class CycleType extends KanaBusEvent {}
+class CycleType extends KanaBusEvent {
+  final TranslationType? type;
+
+  const CycleType({this.type});
+
+  @override
+  List<Object?> get props => [type];
+}
 
 class DeleteBusRide extends KanaBusEvent {
   final String id;

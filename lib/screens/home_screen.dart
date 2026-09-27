@@ -159,6 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 8, width: double.infinity),
                     GestureDetector(
+                      onTap: () {
+                        context.read<KanaBusBloc>().add(
+                          CycleType(type: TranslationType.english),
+                        );
+                      },
                       onLongPress: () async {
                         if (englishCont.text.isNotEmpty) {
                           await Clipboard.setData(
@@ -213,6 +218,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 8, width: double.infinity),
                     GestureDetector(
+                      onTap: () {
+                        context.read<KanaBusBloc>().add(
+                          CycleType(type: TranslationType.japanese),
+                        );
+                      },
                       onLongPress: () async {
                         if (kanaCont.text.isNotEmpty) {
                           await Clipboard.setData(
@@ -267,6 +277,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 8, width: double.infinity),
                     GestureDetector(
+                      onTap: () {
+                        context.read<KanaBusBloc>().add(
+                          CycleType(type: TranslationType.romaji),
+                        );
+                      },
                       onLongPress: () async {
                         if (romajiCont.text.isNotEmpty) {
                           await Clipboard.setData(

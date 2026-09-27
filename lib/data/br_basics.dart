@@ -41,14 +41,14 @@ class BusRideBasics {
       input: '',
       english: 'delicious',
       romaji: 'oishi desu',
-      kana: 'おいし です',
+      kana: 'おいしい です',
     ),
     Busm(
       createdAt: DateTime.now(),
       id: UuidV4().generate(),
       input: '',
       english: 'it\'s okay',
-      romaji: 'oishi desu',
+      romaji: 'daijiyobu desu',
       kana: 'だいじょぶ です',
     ),
     Busm(
